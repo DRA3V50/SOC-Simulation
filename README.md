@@ -59,6 +59,9 @@ This project demonstrates **SOC automation and analyst-style decision-making**:
 | 🔴 High     | 1     |
 | 🟠 Medium   | 1     |
 | 🟢 Low      | 0     |
+---
+## 🔹 Chart Display
+<img src="charts/severity_chart.svg" width="320" height="120" />
 
 **Recent Tickets / Alerts**
 
@@ -69,7 +72,3 @@ This project demonstrates **SOC automation and analyst-style decision-making**:
 
 ---
 
-## 🔹 Chart Display
-![Severity Chart](charts/severity_chart.png)
-
-<img src="charts/severity_chart.svg" width="320" height="120" />
