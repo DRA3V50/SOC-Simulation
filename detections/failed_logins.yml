@@ -1,0 +1,6 @@
+rule_id: DET-001
+name: Multiple Failed Logins
+severity: high
+threshold: 5
+window_minutes: 10
+description: Detects multiple failed authentication attempts from the same host
