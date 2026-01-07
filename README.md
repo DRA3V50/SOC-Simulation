@@ -1,7 +1,5 @@
 # 🛡️ SOC Automation & Data Analytics
 
-![XP Badge](https://img.shields.io/badge/XP:15%20H:1%20M:1%20L:0-blue)
-
 > ⚡ Simulates a **realistic Security Operations Center (SOC)** workflow with automated ticketing 🎟️, alert triage 🚨, data analysis 🕵️, and visualization 📈 — mirrors SIEM, SOAR, IR/EDR processes used by Blue Teams.
 
 ---
@@ -15,6 +13,9 @@
 - ⚙️ **Automation & Orchestration** – Fully automated via GitHub Actions to update repository data daily.  
 
 ---
+
+<!-- DYNAMIC-START -->
+![XP Badge](https://img.shields.io/badge/XP:15%20H:1%20M:1%20L:0-blue)
 
 ## 📈 Alert Snapshot
 
@@ -34,6 +35,7 @@
 |------------|-----------|----------|----------|-----------------------------|
 | 2026-01-07 | TICKET-2026-01-07 | ALERT-2026-01-07 | 🔴 High   | Simulated SOC event (high)  |
 | 2026-01-06 | TICKET-2026-01-06 | ALERT-2026-01-06 | 🟠 Medium | Simulated SOC event (medium)|
+<!-- DYNAMIC-END -->
 
 ---
 
