@@ -2,7 +2,7 @@
 
 ![XP Badge](https://img.shields.io/badge/XP:15%20H:1%20M:1%20L:0-blue)
 
-> ⚡ Simulates a **realistic Security Operations Center (SOC)** workflow with automated ticketing, alert escalation, and data-driven analytics—mirroring SIEM/SOAR processes and analyst-style incident review.
+> Simulates a professional Security Operations Center workflow with automated ticketing using 🎟️ Jira and ServiceNow, alert escalation 🚨 based on severity, and data-driven analytics 📊 for SIEM, SOAR, and incident response.
 
 ---
 
