@@ -2,9 +2,10 @@
 
 # SOC Automation & Data Analytics Simulation
 
-> Daily SOC / SIEM / SOAR automation simulating analyst-driven alert triage, ticket escalation, and incident response reporting.
+Daily SOC / SIEM / SOAR automation simulating analyst-driven alert triage, ticket escalation, and incident response reporting.
 
 This repository demonstrates:
+
 - Automated alert generation (SIEM-style)
 - Ticket creation & escalation (ServiceNow / Jira–like)
 - SOAR playbook execution
@@ -13,46 +14,74 @@ This repository demonstrates:
 
 ---
 
+## 📌 Project Scope
+
+This simulation focuses on daily security operations workflows commonly found in enterprise and government environments.  
+It emphasizes alert normalization, severity-based escalation, and repeatable automation used to support analyst investigation and incident response decision-making.
+
+The repository is intentionally lightweight, data-driven, and structured to resemble operational SOC tooling rather than standalone scripts.
+
+---
+
 ## 📊 Alert Severity Distribution
 
-![Alert Severity Chart](charts/severity_chart.svg)
+Alert severity is aggregated from daily generated tickets and visualized automatically.
 
-> Chart updates automatically based on daily generated tickets and escalations.
+The chart reflects analyst-style escalation logic based on alert criticality and updates on each scheduled run.
 
 ---
 
 ## 🚨 Recent Alerts
+
 | Date | Alert ID | Severity | Event |
 |------|---------|----------|-------|
 | 2026-01-06 | ALERT-2026-01-06 | Medium | Simulated SOC event (medium) |
 
 ---
 
-## 🎟️ Ticketing & Escalation (SOC Workflow)
-Each alert generates a corresponding ticket with:
+## 🎟️ Ticketing & Escalation Workflow
+
+Each alert generates a corresponding ticket containing:
+
 - Severity classification
 - Escalation logic
 - Analyst decision tracking
 
-Tickets are stored in `/tickets` and simulate platforms such as:
-- ServiceNow
-- Jira
-- TheHive
+Tickets are stored as structured JSON under `/tickets` and simulate enterprise case management platforms such as:
+
+- ServiceNow  
+- Jira  
+- TheHive  
 
 ---
 
-## 🛠️ Automation & Analytics Focus
-- Python-based automation
-- Time-based execution (EST)
-- Structured JSON datasets
-- Severity aggregation & reporting
-- Visual dashboards for analyst review
+## 📂 Data & Detection Logic
+
+Alerts and tickets are generated using structured JSON schemas to simulate normalized SIEM output.  
+Severity assignment reflects simplified detection logic based on behavioral indicators and escalation thresholds.
+
+This approach enables:
+
+- Consistent severity classification
+- Trend analysis over time
+- Automation-friendly reporting
+- Downstream enrichment and correlation
+
+The data model is designed to support future expansion into log parsing, detection tuning, and anomaly-based analysis.
 
 ---
 
-## 🎯 Target Roles
-This repository emphasizes practical security operations concepts including alert triage, severity-based escalation, automation-driven response workflows, and structured data analysis.  
-The project is designed to reflect real-world SOC environments where analysts rely on repeatable processes, accurate severity classification, and automated reporting to support investigation and decision-making.
+## 🛠️ Automation & Analytics Design
+
+This project emphasizes repeatable, analyst-friendly automation patterns, including:
+
+- Python-based workflow orchestration
+- Time-based execution aligned to EST
+- Structured datasets for analysis and reporting
+- Severity aggregation across alert lifecycles
+- Lightweight visual dashboards for daily SOC review
+
+The overall design mirrors real SOC environments where automation supports analyst judgment, escalation accuracy, and operational reporting.
 
 ---
 
