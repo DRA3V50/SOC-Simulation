@@ -1,8 +1,9 @@
 from pathlib import Path
 import json
+import random
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import random
+import yaml
 
 # =============================
 # PATHS
@@ -11,9 +12,10 @@ ROOT = Path(__file__).parent.parent
 ALERTS = ROOT / "alerts"
 TICKETS = ROOT / "tickets"
 CHARTS = ROOT / "charts"
-PLAYBOOKS = ROOT / "playbooks"
+DETECTIONS = ROOT / "detections"
+CORRELATIONS = ROOT / "correlations"
 
-for d in [ALERTS, TICKETS, CHARTS, PLAYBOOKS]:
+for d in [ALERTS, TICKETS, CHARTS, DETECTIONS, CORRELATIONS]:
     d.mkdir(exist_ok=True)
 
 # =============================
@@ -23,132 +25,111 @@ now = datetime.now(ZoneInfo("America/New_York"))
 today = now.strftime("%Y-%m-%d")
 
 # =============================
-# 1️⃣ CREATE TODAY'S TICKET
+# LOAD DETECTION RULES
 # =============================
-ticket_path = TICKETS / f"{today}.json"
+rules = []
+for rule_file in DETECTIONS.glob("*.yml"):
+    with open(rule_file, "r") as f:
+        rules.append(yaml.safe_load(f))
 
-severity = random.choices(
-    ["high", "medium", "low"],
-    weights=[3, 4, 3]
-)[0]
+rule = random.choice(rules) if rules else None
 
-# ✅ Hybrid Jira + ServiceNow style ticket ID
+# =============================
+# DETECTION TRIGGER
+# =============================
+triggered = random.choice([True, False])
+severity = rule["severity"] if triggered and rule else "low"
+
+# =============================
+# INCIDENT LIFECYCLE
+# =============================
+lifecycle = ["New", "In Progress", "Contained", "Resolved"]
+status = random.choice(lifecycle)
+
+# =============================
+# HOST / IDS
+# =============================
+host = f"HOST-{random.randint(10,99)}"
 ticket_id = f"SOC-INC{now.strftime('%Y%m%d')}-{random.randint(1000,9999)}"
+alert_id = f"ALERT-{today}-{random.randint(1000,9999)}"
 
+# =============================
+# CREATE TICKET (ServiceNow / Jira style)
+# =============================
 ticket = {
     "ticket_id": ticket_id,
     "created": now.isoformat(),
     "severity": severity,
-    "system": f"HOST-{random.randint(10,99)}",
-    "event": f"Simulated SOC event ({severity})"
+    "status": status,
+    "host": host,
+    "summary": rule["name"] if triggered and rule else "Low-risk security event",
+    "source": "SIEM"
 }
 
-with open(ticket_path, "w") as f:
+with open(TICKETS / f"{today}.json", "w") as f:
     json.dump(ticket, f, indent=2)
 
 # =============================
-# 2️⃣ CREATE ALERT
+# CREATE ALERT
 # =============================
-alert_path = ALERTS / f"{today}.json"
-
-# Make alert ID unique
-alert_id = f"ALERT-{today}-{random.randint(1000,9999)}"
-
 alert = {
     "alert_id": alert_id,
     "ticket_id": ticket_id,
     "severity": severity,
-    "event": ticket["event"],
+    "host": host,
+    "rule_id": rule["rule_id"] if triggered and rule else None,
     "timestamp": now.isoformat()
 }
 
-with open(alert_path, "w") as f:
+with open(ALERTS / f"{today}.json", "w") as f:
     json.dump(alert, f, indent=2)
 
 # =============================
-# 3️⃣ COUNT SEVERITIES
+# ALERT CORRELATION
+# =============================
+incident_key = f"{host}-{severity}"
+incident_id = f"INC-GRP-{abs(hash(incident_key)) % 10000}"
+
+correlation = {
+    "incident_id": incident_id,
+    "host": host,
+    "severity": severity,
+    "alerts": [alert_id],
+    "status": status
+}
+
+with open(CORRELATIONS / f"{today}.json", "w") as f:
+    json.dump(correlation, f, indent=2)
+
+# =============================
+# COUNT SEVERITIES
 # =============================
 counts = {"high": 0, "medium": 0, "low": 0}
-
 for f in ALERTS.glob("*.json"):
-    with open(f) as jf:
-        a = json.load(jf)
+    a = json.load(open(f))
     counts[a["severity"]] += 1
 
 # =============================
-# 4️⃣ GENERATE SVG CHART
+# GENERATE SVG CHART
 # =============================
-def w(c): 
+def bar_width(c):
     return max(c * 30, 10)
 
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
-  <rect x="10" y="15" width="{w(counts['high'])}" height="20" fill="red"/>
-  <text x="{15 + w(counts['high'])}" y="30" fill="red">High ({counts['high']})</text>
+  <rect x="10" y="15" width="{bar_width(counts['high'])}" height="20" fill="red"/>
+  <text x="170" y="30" fill="red">High ({counts['high']})</text>
 
-  <rect x="10" y="50" width="{w(counts['medium'])}" height="20" fill="orange"/>
-  <text x="{15 + w(counts['medium'])}" y="65" fill="orange">Medium ({counts['medium']})</text>
+  <rect x="10" y="50" width="{bar_width(counts['medium'])}" height="20" fill="orange"/>
+  <text x="170" y="65" fill="orange">Medium ({counts['medium']})</text>
 
-  <rect x="10" y="85" width="{w(counts['low'])}" height="20" fill="green"/>
-  <text x="{15 + w(counts['low'])}" y="100" fill="green">Low ({counts['low']})</text>
+  <rect x="10" y="85" width="{bar_width(counts['low'])}" height="20" fill="green"/>
+  <text x="170" y="100" fill="green">Low ({counts['low']})</text>
 </svg>
 """
 
-chart_path = CHARTS / "severity_chart.svg"
-with open(chart_path, "w") as f:
+with open(CHARTS / "severity_chart.svg", "w") as f:
     f.write(svg.strip())
 
-# =============================
-# 5️⃣ UPDATE README (DYNAMIC TABLE ONLY)
-# =============================
-xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
-badge = f"https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue"
-
-readme_path = ROOT / "README.md"
-
-# Read current README
-with open(readme_path, "r") as f:
-    lines = f.readlines()
-
-# Locate the Recent Tickets table start
-start_idx = None
-for i, line in enumerate(lines):
-    if line.startswith("| Date       | Ticket ID 🎟️"):
-        start_idx = i
-        break
-
-# Locate table end
-end_idx = None
-for i in range(start_idx, len(lines)):
-    if lines[i].strip() == "" or lines[i].startswith("---"):
-        end_idx = i
-        break
-if end_idx is None:
-    end_idx = len(lines)
-
-readme_static = lines[:start_idx]
-
-# Build new table header
-table_lines = [
-    "| Date       | Ticket ID 🎟️   | Alert ID 🚨        | Severity | Event                       |\n",
-    "|------------|----------------|------------------|----------|-----------------------------|\n"
-]
-
-# Add latest 5 tickets/alerts
-for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
-    a = json.load(open(f))
-    t = json.load(open(TICKETS / f"{f.stem}.json"))
-    table_lines.append(
-        f"| {f.stem} | {t['ticket_id']} | {a['alert_id']} | "
-        f"{'🔴 High' if a['severity']=='high' else '🟠 Medium' if a['severity']=='medium' else '🟢 Low'} | {a['event']} |\n"
-    )
-
-# Keep everything after old table
-readme_tail = lines[end_idx:]
-
-# Write full README
-with open(readme_path, "w") as f:
-    f.writelines(readme_static + table_lines + readme_tail)
-
-print("✅ SOC daily simulation completed with hybrid ticketing!")
+print("✅ SOC detection, lifecycle, and correlation automation complete.")
 
