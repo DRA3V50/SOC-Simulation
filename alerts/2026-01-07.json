@@ -1,8 +1,7 @@
 {
-  "alert_id": "ALERT-2026-01-07-8441",
-  "ticket_id": "SOC-INC20260107-6147",
-  "severity": "low",
-  "host": "HOST-69",
-  "rule_id": null,
-  "timestamp": "2026-01-07T17:41:39.442934-05:00"
+  "alert_id": "ALERT-2026-01-07-1765",
+  "ticket_id": "SOC-INC20260107-5335",
+  "severity": "high",
+  "event": "Simulated SOC event (high)",
+  "timestamp": "2026-01-07T17:45:39.991484-05:00"
 }
