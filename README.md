@@ -1,4 +1,5 @@
-# 🎯 XP Badge: SOC Automation & Data Analytics
+# ***🛡️ SOC Detection & Incident Data Automation***
+
 
 ![XP Badge](https://img.shields.io/badge/XP:15%20H:1%20M:1%20L:0-blue)
 
@@ -15,6 +16,14 @@ This project demonstrates **SOC automation and analyst-style decision-making**:
 - 📈 **Analytics & Visualization** – Counts alerts, calculates XP points for gamification, and generates severity charts 📊 to visualize trends over time.  
 - 🔍 **Data Analysis** – Mimics SOC/IR analyst techniques by identifying patterns, highlighting recurring issues, and prioritizing incidents for investigation.  
 - ⚙️ **Automation** – Fully automated via GitHub Actions to simulate daily SOC activity without manual intervention.  
+
+---
+
+## 🔍 Detection and Incident Correlation
+
+- 📐 **SIEM Detection Rules:** Security detections are defined using structured rules that simulate how SIEM platforms identify suspicious behavior.
+- 🔄 **Incident Lifecycle Tracking:** Each security event progresses through investigation stages from initial detection to resolution.
+- 🔗 **Alert Correlation:** Related alerts are automatically grouped into a single incident based on shared attributes to reduce noise and improve analyst efficiency.
 
 ---
 
