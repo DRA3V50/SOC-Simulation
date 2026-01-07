@@ -1,24 +1,24 @@
-![XP Badge](https://img.shields.io/badge/XP%3A0%20%7C%20H%3A0%20M%3A0%20L%3A0-blue)
+![XP Badge](https://img.shields.io/badge/XP:5%20H:0%20M:1%20L:0-blue)
 
-# 📊 SOC Simulation & Data Analyst Automation
+# SOC Automation & Data Analytics Simulation
 
-> Simulated SOC workflow: alert → ticket → playbook → analyst/IR decision → XP scoring
+> Daily SOC / SIEM / SOAR automation with analyst-style escalation logic.
 
 ### 📊 Alert Severity Distribution
-<svg width="300" height="100" xmlns="http://www.w3.org/2000/svg"></svg>
+
+<svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="15" width="10" height="20" fill="red"/>
+  <text x="25" y="30" fill="red">High (0)</text>
+
+  <rect x="10" y="50" width="30" height="20" fill="orange"/>
+  <text x="45" y="65" fill="orange">Medium (1)</text>
+
+  <rect x="10" y="85" width="10" height="20" fill="green"/>
+  <text x="25" y="100" fill="green">Low (0)</text>
+</svg>
+
 
 ### 🚨 Recent Alerts
 | Date | Alert ID | Severity | Event |
-|------|---------|---------|-------|
-
-### 🛠️ Recent Playbooks
-| Date | Playbook ID | Name | Severity |
-|------|------------|------|---------|
-
-### 📈 Totals
-- Alerts generated: 0
-- Total XP: 0
-
-## 🧠 MITRE ATT&CK Coverage
-| Date | Alert ID | Tactic | Technique ID | Technique Name |
-|------|---------|--------|--------------|----------------|
+|------|---------|----------|-------|
+| 2026-01-06 | ALERT-2026-01-06 | Medium | Simulated SOC event (medium) |
