@@ -1,0 +1,30 @@
+name: Daily SOC Update
+
+on:
+  schedule:
+    - cron: '0 14 * * *'  # 9AM EST in UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update_soc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - run: pip install -r requirements.txt || true
+      - run: python scripts/generate_daily.py
+      - run: |
+          git config user.name "SOC Bot"
+          git config user.email "socbot@example.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git
+      - run: |
+          git add README.md charts/severity_chart.svg tickets/ alerts/ playbooks/
+          git diff --quiet || git commit -m "Auto-update SOC daily tickets and chart"
+          git push origin HEAD:main
