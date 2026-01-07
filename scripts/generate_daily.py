@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import random
-import yaml
+import re
 
 # =============================
 # PATHS
@@ -12,11 +12,10 @@ ROOT = Path(__file__).parent.parent
 ALERTS = ROOT / "alerts"
 TICKETS = ROOT / "tickets"
 CHARTS = ROOT / "charts"
-PLAYBOOKS = ROOT / "playbooks"
 DETECTIONS = ROOT / "detections"
 CORRELATIONS = ROOT / "correlations"
 
-for d in [ALERTS, TICKETS, CHARTS, PLAYBOOKS, DETECTIONS, CORRELATIONS]:
+for d in [ALERTS, TICKETS, CHARTS, DETECTIONS, CORRELATIONS]:
     d.mkdir(exist_ok=True)
 
 # =============================
@@ -35,8 +34,13 @@ severity = random.choices(
     weights=[3, 4, 3]
 )[0]
 
+# Simulate Jira/ServiceNow style ticket ID
+ticket_id_prefix = "SOC-INC"  # Example: SOC-INC20260107-5360
+ticket_id_suffix = random.randint(1000, 9999)
+ticket_id = f"{ticket_id_prefix}{today.replace('-', '')}-{ticket_id_suffix}"
+
 ticket = {
-    "ticket_id": f"SOC-INC{today.replace('-', '')}-{random.randint(1000,9999)}",
+    "ticket_id": ticket_id,
     "created": now.isoformat(),
     "severity": severity,
     "system": f"HOST-{random.randint(10,99)}",
@@ -51,8 +55,9 @@ with open(ticket_path, "w") as f:
 # =============================
 alert_path = ALERTS / f"{today}.json"
 
+alert_id_suffix = random.randint(1000, 9999)
 alert = {
-    "alert_id": f"ALERT-{today}-{random.randint(1000,9999)}",
+    "alert_id": f"ALERT-{today}-{alert_id_suffix}",
     "ticket_id": ticket["ticket_id"],
     "severity": severity,
     "event": ticket["event"],
@@ -75,7 +80,7 @@ for f in ALERTS.glob("*.json"):
 # =============================
 # 4️⃣ GENERATE SVG CHART
 # =============================
-def w(c): 
+def w(c):
     return max(c * 30, 10)
 
 svg = f"""
@@ -96,69 +101,43 @@ with open(chart_path, "w") as f:
     f.write(svg.strip())
 
 # =============================
-# 5️⃣ BUILD README
+# 5️⃣ UPDATE README WITHOUT OVERWRITING STATIC SECTIONS
 # =============================
+readme_path = ROOT / "README.md"
+
+with open(readme_path, "r") as f:
+    readme_content = f.read()
+
+# Update XP badge
 xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
-badge = f"https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue"
+badge_pattern = r"!\[XP Badge\]\(https://img\.shields\.io/badge/XP:[^\)]+\)"
+badge_new = f"![XP Badge](https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue)"
+readme_content = re.sub(badge_pattern, badge_new, readme_content)
 
-readme = f"""
-# 🛡️ SOC Detection & Incident Data Automation
-
-![XP Badge]({badge})
-
-⚡ Simulates a professional Security Operations Center workflow with automated ticketing using 🎟️ Jira and ServiceNow, alert escalation 🚨 based on severity, and data-driven analytics 📊 for SIEM, SOAR, and incident response.
-
-## 🔹 Project Focus
-🎟️ Automated Ticketing & Alerts – Generates daily tickets in Jira/ServiceNow format and simulates real incident intake.
-🚨 Escalation & Prioritization – Automatically classifies alerts High 🔴 / Medium 🟠 / Low 🟢 for analyst prioritization.
-📈 Analytics & Visualization – Counts alerts, calculates XP points, and generates severity charts 📊.
-🔍 Data Analysis – Identifies patterns, recurring issues, and prioritizes incidents.
-⚙️ Automation – Fully automated via GitHub Actions to simulate daily SOC activity.
-🔍 Detection and Incident Correlation
-📐 SIEM Detection Rules – Structured detection rules identify suspicious activity.
-🔄 Incident Lifecycle Tracking – Tracks events from detection to resolution.
-🔗 Alert Correlation – Groups related alerts into single incidents to reduce noise.
-
-## 📊 Alert Analytics
-Severity Distribution
-
-| Severity | Count |
+# Update Severity Table
+severity_pattern = r"(\| Severity \| Count \|[\s\S]*?)\n##"
+severity_table = f"""| Severity | Count |
 |----------|-------|
 | 🔴 High  | {counts['high']} |
 | 🟠 Medium| {counts['medium']} |
 | 🟢 Low   | {counts['low']} |
-
-## 📈 Chart Display
-<img src="charts/severity_chart.svg" width="320" height="120" />
-
-## 🎟️ Recent Tickets / Alerts
-| Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |
-|------|---------------|------------|---------|-------|
 """
+readme_content = re.sub(r"\| Severity \| Count \|[\s\S]*?\n##", severity_table + "\n\n##", readme_content)
 
-# Add recent alerts
-for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
+# Update Recent Tickets Table (keep top 5 latest)
+recent_alerts = sorted(ALERTS.glob("*.json"), reverse=True)[:5]
+tickets_table = "| Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |\n"
+tickets_table += "|------|---------------|------------|---------|-------|\n"
+for f in recent_alerts:
     a = json.load(open(f))
-    sev_icon = "🔴" if a["severity"]=="high" else "🟠" if a["severity"]=="medium" else "🟢"
-    readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev_icon} {a['severity'].capitalize()} | {a['event']} |\n"
+    sev_emoji = "🔴" if a["severity"]=="high" else "🟠" if a["severity"]=="medium" else "🟢"
+    tickets_table += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev_emoji} {a['severity'].capitalize()} | {a['event']} |\n"
 
-# =============================
-# 6️⃣ ADD DETECTION RULES
-# =============================
-readme += "\n## 🧰 Detection Rules\n\n"
-readme += "| Rule ID | Name | Severity | Description |\n"
-readme += "|---------|------|---------|-------------|\n"
+readme_content = re.sub(r"\| Date \| Ticket ID 🎟️ \| Alert ID 🚨 \| Severity \| Event \|[\s\S]*?\n## 🧰 Detection Rules", tickets_table + "\n\n## 🧰 Detection Rules", readme_content)
 
-for f in sorted(DETECTIONS.glob("*.yml")):
-    rule = yaml.safe_load(open(f))
-    readme += f"| {rule['rule_id']} | {rule['name']} | {rule['severity'].capitalize()} | {rule['description']} |\n"
+with open(readme_path, "w") as f:
+    f.write(readme_content)
 
-# =============================
-# WRITE README
-# =============================
-with open(ROOT / "README.md", "w") as f:
-    f.write(readme.strip())
-
-print("✅ SOC daily simulation completed with detections")
+print("✅ SOC daily simulation completed without overwriting static sections")
 
 
