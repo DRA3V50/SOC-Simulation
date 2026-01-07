@@ -2,47 +2,41 @@ name: Daily SOC Update
 
 on:
   schedule:
-    - cron: '0 14 * * *'  # 9AM EST (14:00 UTC)
+    - cron: '0 14 * * *'  # 9AM EST
   workflow_dispatch:
 
 permissions:
-  contents: write  # allows pushing commits
+  contents: write
 
 jobs:
   update_soc:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          persist-credentials: false  # must use PAT
+          persist-credentials: false
 
-      # 2️⃣ Set up Python
-      - name: Set up Python 3.11
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: '3.11'
 
-      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: pip install -r requirements.txt || true
 
-      # 4️⃣ Generate alerts, tickets, chart, and README
-      - name: Run daily SOC script
+      - name: Run SOC generator
         run: python scripts/generate_daily.py
 
-      # 5️⃣ Configure Git with PAT
       - name: Configure Git
         run: |
           git config user.name "SOC Bot"
           git config user.email "soc-bot@example.com"
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git
 
-      # 6️⃣ Commit and push updates
-      - name: Commit and push changes
+      - name: Commit and push
         run: |
-          git add README.md charts/ tickets/ alerts/ playbooks/
-          git diff --quiet || git commit -m "Auto-update SOC daily tickets, chart, and README"
+          git add .
+          git diff --cached --quiet || git commit -m "Auto-generate daily SOC simulation"
           git push origin HEAD:main
