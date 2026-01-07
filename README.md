@@ -51,12 +51,8 @@ Tickets are stored in `/tickets` and simulate platforms such as:
 ---
 
 ## 🎯 Target Roles
-This project aligns with:
-- SOC Analyst (Tier 1–2)
-- Cyber Data Analyst
-- SOAR Automation Analyst
-- Incident Response Analyst
-- Federal GS-7 → GS-13 cyber / data roles
+This repository emphasizes practical security operations concepts including alert triage, severity-based escalation, automation-driven response workflows, and structured data analysis.  
+The project is designed to reflect real-world SOC environments where analysts rely on repeatable processes, accurate severity classification, and automated reporting to support investigation and decision-making.
 
 ---
 
