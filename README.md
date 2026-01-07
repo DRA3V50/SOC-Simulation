@@ -14,6 +14,7 @@
 
 ---
 
+
 <!-- DYNAMIC-START -->
 ![XP Badge](https://img.shields.io/badge/XP:15%20H:1%20M:1%20L:0-blue)
 
@@ -31,10 +32,10 @@
 
 **🎟️ Recent Tickets / Alerts**
 
-| Date       | Ticket 🎟️ | Alert 🚨 | Severity | Event                       |
-|------------|-----------|----------|----------|-----------------------------|
-| 2026-01-07 | TICKET-2026-01-07 | ALERT-2026-01-07 | 🔴 High   | Simulated SOC event (high)  |
-| 2026-01-06 | TICKET-2026-01-06 | ALERT-2026-01-06 | 🟠 Medium | Simulated SOC event (medium)|
+| Date       | Ticket 🎟️ | Alert 🚨 | Severity | Event |
+|------------|-----------|----------|----------|-------|
+| 2026-01-07 | TICKET-2026-01-07 | ALERT-2026-01-07 | High | Simulated SOC event (high) |
+| 2026-01-06 | TICKET-2026-01-06 | ALERT-2026-01-06 | Medium | Simulated SOC event (medium) |
 <!-- DYNAMIC-END -->
 
 ---
