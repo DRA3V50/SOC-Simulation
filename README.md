@@ -2,23 +2,62 @@
 
 # SOC Automation & Data Analytics Simulation
 
-> Daily SOC / SIEM / SOAR automation with analyst-style escalation logic.
+> Daily SOC / SIEM / SOAR automation simulating analyst-driven alert triage, ticket escalation, and incident response reporting.
 
-### 📊 Alert Severity Distribution
+This repository demonstrates:
+- Automated alert generation (SIEM-style)
+- Ticket creation & escalation (ServiceNow / Jira–like)
+- SOAR playbook execution
+- Severity-based analytics & visualization
+- Daily reporting using GitHub Actions (EST)
 
-<svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
-  <rect x="10" y="15" width="10" height="20" fill="red"/>
-  <text x="25" y="30" fill="red">High (0)</text>
+---
 
-  <rect x="10" y="50" width="30" height="20" fill="orange"/>
-  <text x="45" y="65" fill="orange">Medium (1)</text>
+## 📊 Alert Severity Distribution
 
-  <rect x="10" y="85" width="10" height="20" fill="green"/>
-  <text x="25" y="100" fill="green">Low (0)</text>
-</svg>
+![Alert Severity Chart](charts/severity_chart.svg)
 
+> Chart updates automatically based on daily generated tickets and escalations.
 
-### 🚨 Recent Alerts
+---
+
+## 🚨 Recent Alerts
 | Date | Alert ID | Severity | Event |
 |------|---------|----------|-------|
 | 2026-01-06 | ALERT-2026-01-06 | Medium | Simulated SOC event (medium) |
+
+---
+
+## 🎟️ Ticketing & Escalation (SOC Workflow)
+Each alert generates a corresponding ticket with:
+- Severity classification
+- Escalation logic
+- Analyst decision tracking
+
+Tickets are stored in `/tickets` and simulate platforms such as:
+- ServiceNow
+- Jira
+- TheHive
+
+---
+
+## 🛠️ Automation & Analytics Focus
+- Python-based automation
+- Time-based execution (EST)
+- Structured JSON datasets
+- Severity aggregation & reporting
+- Visual dashboards for analyst review
+
+---
+
+## 🎯 Target Roles
+This project aligns with:
+- SOC Analyst (Tier 1–2)
+- Cyber Data Analyst
+- SOAR Automation Analyst
+- Incident Response Analyst
+- Federal GS-7 → GS-13 cyber / data roles
+
+---
+
+_Last updated automatically via GitHub Actions_
