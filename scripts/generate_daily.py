@@ -23,7 +23,7 @@ now = datetime.now(ZoneInfo("America/New_York"))
 today = now.strftime("%Y-%m-%d")
 
 # =============================
-# 1️⃣ CREATE TODAY'S TICKET (ALWAYS)
+# 1️⃣ CREATE TODAY'S TICKET
 # =============================
 ticket_path = TICKETS / f"{today}.json"
 
@@ -70,9 +70,9 @@ for f in ALERTS.glob("*.json"):
     counts[a["severity"]] += 1
 
 # =============================
-# 4️⃣ GENERATE SVG (FOR REAL)
+# 4️⃣ GENERATE SVG CHART
 # =============================
-def w(c): 
+def w(c):
     return max(c * 30, 10)
 
 svg = f"""
@@ -93,31 +93,59 @@ with open(chart_path, "w") as f:
     f.write(svg.strip())
 
 # =============================
-# 5️⃣ README
+# 5️⃣ UPDATE README (DYNAMIC SECTION ONLY)
 # =============================
+README = ROOT / "README.md"
+
+# XP calculation for badge
 xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
 badge = f"https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue"
 
-readme = f"""
+# Generate dynamic content
+dynamic_content = f"""
+<!-- DYNAMIC-START -->
 ![XP Badge]({badge})
 
-# SOC Automation & Data Analytics Simulation
+## 📈 Alert Snapshot
 
-> Daily SOC / SIEM / SOAR automation with analyst-style escalation logic.
+| Severity | Count |
+|----------|-------|
+| 🔴 High  | {counts['high']}     |
+| 🟠 Medium| {counts['medium']}     |
+| 🟢 Low   | {counts['low']}     |
 
-### 📊 Alert Severity Distribution
-{svg}
+**📊 Severity Chart**
 
-### 🚨 Recent Alerts
-| Date | Alert ID | Severity | Event |
-|------|---------|----------|-------|
+<img src="charts/severity_chart.svg" width="320" height="120" />
+
+**🎟️ Recent Tickets / Alerts**
+
+| Date       | Ticket 🎟️ | Alert 🚨 | Severity | Event |
+|------------|-----------|----------|----------|-------|
 """
 
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
-    readme += f"| {f.stem} | {a['alert_id']} | {a['severity'].capitalize()} | {a['event']} |\n"
+    dynamic_content += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {a['severity'].capitalize()} | {a['event']} |\n"
 
-with open(ROOT / "README.md", "w") as f:
-    f.write(readme.strip())
+dynamic_content += "<!-- DYNAMIC-END -->"
 
-print("✅ SOC daily simulation completed")
+# Read existing README
+if README.exists():
+    content = README.read_text()
+    if "<!-- DYNAMIC-START -->" in content and "<!-- DYNAMIC-END -->" in content:
+        pre = content.split("<!-- DYNAMIC-START -->")[0]
+        post = content.split("<!-- DYNAMIC-END -->")[1]
+        new_content = pre + dynamic_content + post
+    else:
+        # If markers missing, append at end
+        new_content = content.strip() + "\n\n" + dynamic_content
+else:
+    # If README does not exist, create from scratch
+    new_content = dynamic_content
+
+with open(README, "w") as f:
+    f.write(new_content.strip())
+
+print("✅ SOC daily simulation updated (dynamic section only).")
+
