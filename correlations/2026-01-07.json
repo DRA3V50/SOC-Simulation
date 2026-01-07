@@ -1,0 +1,9 @@
+{
+  "incident_id": "INC-GRP-2340",
+  "host": "HOST-69",
+  "severity": "low",
+  "alerts": [
+    "ALERT-2026-01-07-8441"
+  ],
+  "status": "Contained"
+}
