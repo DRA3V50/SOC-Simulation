@@ -18,7 +18,7 @@ This project demonstrates **SOC automation and analyst-style decision-making**:
 
 ---
 
-## 📊 Alert Analytics
+## 📈 Alert Analytics
 
 **Severity Distribution**
 
@@ -30,7 +30,7 @@ This project demonstrates **SOC automation and analyst-style decision-making**:
 
 ---
 
-## 📈 Chart Display
+## 📊 Chart Display
 <img src="charts/severity_chart.svg" width="320" height="120" />
 
 ---
