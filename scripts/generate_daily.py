@@ -32,8 +32,11 @@ severity = random.choices(
     weights=[3, 4, 3]
 )[0]
 
+# ✅ Hybrid Jira + ServiceNow style
+ticket_id = f"SOC-INC{now.strftime('%Y%m%d')}-{random.randint(1000,9999)}"
+
 ticket = {
-    "ticket_id": f"TICKET-{today}",
+    "ticket_id": ticket_id,
     "created": now.isoformat(),
     "severity": severity,
     "system": f"HOST-{random.randint(10,99)}",
@@ -48,9 +51,12 @@ with open(ticket_path, "w") as f:
 # =============================
 alert_path = ALERTS / f"{today}.json"
 
+# Make alert ID unique
+alert_id = f"ALERT-{today}-{random.randint(1000,9999)}"
+
 alert = {
-    "alert_id": f"ALERT-{today}",
-    "ticket_id": ticket["ticket_id"],
+    "alert_id": alert_id,
+    "ticket_id": ticket_id,
     "severity": severity,
     "event": ticket["event"],
     "timestamp": now.isoformat()
@@ -72,7 +78,7 @@ for f in ALERTS.glob("*.json"):
 # =============================
 # 4️⃣ GENERATE SVG CHART
 # =============================
-def w(c):
+def w(c): 
     return max(c * 30, 10)
 
 svg = f"""
@@ -95,57 +101,44 @@ with open(chart_path, "w") as f:
 # =============================
 # 5️⃣ UPDATE README (DYNAMIC SECTION ONLY)
 # =============================
-README = ROOT / "README.md"
-
-# XP calculation for badge
 xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
 badge = f"https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue"
 
-# Generate dynamic content
-dynamic_content = f"""
-<!-- DYNAMIC-START -->
-![XP Badge]({badge})
+readme_path = ROOT / "README.md"
 
-## 📈 Alert Snapshot
+# Read current README
+with open(readme_path, "r") as f:
+    lines = f.readlines()
 
-| Severity | Count |
-|----------|-------|
-| 🔴 High  | {counts['high']}     |
-| 🟠 Medium| {counts['medium']}     |
-| 🟢 Low   | {counts['low']}     |
+# Split into static & dynamic
+start_idx = 0
+end_idx = len(lines)
+for i, line in enumerate(lines):
+    if line.startswith("## 🎟️ Recent Tickets / Alerts"):
+        start_idx = i
+        break
 
-**📊 Severity Chart**
+# Keep static lines, replace everything from 'Recent Tickets / Alerts' onwards
+readme_static = lines[:start_idx]
 
-<img src="charts/severity_chart.svg" width="320" height="120" />
+dynamic_section = [
+    "## 🎟️ Recent Tickets / Alerts\n\n",
+    "| Date       | Ticket ID 🎟️   | Alert ID 🚨        | Severity | Event                       |\n",
+    "|------------|----------------|------------------|----------|-----------------------------|\n"
+]
 
-**🎟️ Recent Tickets / Alerts**
-
-| Date       | Ticket 🎟️ | Alert 🚨 | Severity | Event |
-|------------|-----------|----------|----------|-------|
-"""
-
+# Add latest 5 tickets/alerts (most recent first)
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
-    dynamic_content += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {a['severity'].capitalize()} | {a['event']} |\n"
+    t = json.load(open(TICKETS / f"{f.stem}.json"))
+    dynamic_section.append(
+        f"| {f.stem} | {t['ticket_id']} | {a['alert_id']} | "
+        f"{'🔴 High' if a['severity']=='high' else '🟠 Medium' if a['severity']=='medium' else '🟢 Low'} | {a['event']} |\n"
+    )
 
-dynamic_content += "<!-- DYNAMIC-END -->"
+# Write back updated README
+with open(readme_path, "w") as f:
+    f.writelines(readme_static + dynamic_section)
 
-# Read existing README
-if README.exists():
-    content = README.read_text()
-    if "<!-- DYNAMIC-START -->" in content and "<!-- DYNAMIC-END -->" in content:
-        pre = content.split("<!-- DYNAMIC-START -->")[0]
-        post = content.split("<!-- DYNAMIC-END -->")[1]
-        new_content = pre + dynamic_content + post
-    else:
-        # If markers missing, append at end
-        new_content = content.strip() + "\n\n" + dynamic_content
-else:
-    # If README does not exist, create from scratch
-    new_content = dynamic_content
-
-with open(README, "w") as f:
-    f.write(new_content.strip())
-
-print("✅ SOC daily simulation updated (dynamic section only).")
+print("✅ SOC daily simulation completed with hybrid ticketing!")
 
