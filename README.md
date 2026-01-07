@@ -39,5 +39,5 @@ This project demonstrates **SOC automation and analyst-style decision-making**:
 
 | Date       | Ticket ID 🎟️   | Alert ID 🚨        | Severity | Event                       |
 |------------|----------------|------------------|----------|-----------------------------|
-| 2026-01-07 | SOC-INC20260107-6207 | ALERT-2026-01-07-6192 | 🔴 High | Simulated SOC event (high) |
-| 2026-01-06 | SOC-INC20260106-1234 | ALERT-2026-01-06-5678 | 🟠 Medium | Simulated SOC event (medium) |
+| 2026-01-07 | SOC-INC20260107-5360 | ALERT-2026-01-07-2511 | 🟠 Medium | Simulated SOC event (medium) |
+| 2026-01-06 | TICKET-2026-01-06 | ALERT-2026-01-06 | 🟠 Medium | Simulated SOC event (medium) |
