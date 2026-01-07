@@ -1,8 +1,8 @@
 from pathlib import Path
 import json
-import random
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import random
 import yaml
 
 # =============================
@@ -12,10 +12,11 @@ ROOT = Path(__file__).parent.parent
 ALERTS = ROOT / "alerts"
 TICKETS = ROOT / "tickets"
 CHARTS = ROOT / "charts"
+PLAYBOOKS = ROOT / "playbooks"
 DETECTIONS = ROOT / "detections"
 CORRELATIONS = ROOT / "correlations"
 
-for d in [ALERTS, TICKETS, CHARTS, DETECTIONS, CORRELATIONS]:
+for d in [ALERTS, TICKETS, CHARTS, PLAYBOOKS, DETECTIONS, CORRELATIONS]:
     d.mkdir(exist_ok=True)
 
 # =============================
@@ -25,111 +26,139 @@ now = datetime.now(ZoneInfo("America/New_York"))
 today = now.strftime("%Y-%m-%d")
 
 # =============================
-# LOAD DETECTION RULES
+# 1️⃣ CREATE TODAY'S TICKET
 # =============================
-rules = []
-for rule_file in DETECTIONS.glob("*.yml"):
-    with open(rule_file, "r") as f:
-        rules.append(yaml.safe_load(f))
+ticket_path = TICKETS / f"{today}.json"
 
-rule = random.choice(rules) if rules else None
+severity = random.choices(
+    ["high", "medium", "low"],
+    weights=[3, 4, 3]
+)[0]
 
-# =============================
-# DETECTION TRIGGER
-# =============================
-triggered = random.choice([True, False])
-severity = rule["severity"] if triggered and rule else "low"
-
-# =============================
-# INCIDENT LIFECYCLE
-# =============================
-lifecycle = ["New", "In Progress", "Contained", "Resolved"]
-status = random.choice(lifecycle)
-
-# =============================
-# HOST / IDS
-# =============================
-host = f"HOST-{random.randint(10,99)}"
-ticket_id = f"SOC-INC{now.strftime('%Y%m%d')}-{random.randint(1000,9999)}"
-alert_id = f"ALERT-{today}-{random.randint(1000,9999)}"
-
-# =============================
-# CREATE TICKET (ServiceNow / Jira style)
-# =============================
 ticket = {
-    "ticket_id": ticket_id,
+    "ticket_id": f"SOC-INC{today.replace('-', '')}-{random.randint(1000,9999)}",
     "created": now.isoformat(),
     "severity": severity,
-    "status": status,
-    "host": host,
-    "summary": rule["name"] if triggered and rule else "Low-risk security event",
-    "source": "SIEM"
+    "system": f"HOST-{random.randint(10,99)}",
+    "event": f"Simulated SOC event ({severity})"
 }
 
-with open(TICKETS / f"{today}.json", "w") as f:
+with open(ticket_path, "w") as f:
     json.dump(ticket, f, indent=2)
 
 # =============================
-# CREATE ALERT
+# 2️⃣ CREATE ALERT
 # =============================
+alert_path = ALERTS / f"{today}.json"
+
 alert = {
-    "alert_id": alert_id,
-    "ticket_id": ticket_id,
+    "alert_id": f"ALERT-{today}-{random.randint(1000,9999)}",
+    "ticket_id": ticket["ticket_id"],
     "severity": severity,
-    "host": host,
-    "rule_id": rule["rule_id"] if triggered and rule else None,
+    "event": ticket["event"],
     "timestamp": now.isoformat()
 }
 
-with open(ALERTS / f"{today}.json", "w") as f:
+with open(alert_path, "w") as f:
     json.dump(alert, f, indent=2)
 
 # =============================
-# ALERT CORRELATION
-# =============================
-incident_key = f"{host}-{severity}"
-incident_id = f"INC-GRP-{abs(hash(incident_key)) % 10000}"
-
-correlation = {
-    "incident_id": incident_id,
-    "host": host,
-    "severity": severity,
-    "alerts": [alert_id],
-    "status": status
-}
-
-with open(CORRELATIONS / f"{today}.json", "w") as f:
-    json.dump(correlation, f, indent=2)
-
-# =============================
-# COUNT SEVERITIES
+# 3️⃣ COUNT SEVERITIES
 # =============================
 counts = {"high": 0, "medium": 0, "low": 0}
+
 for f in ALERTS.glob("*.json"):
-    a = json.load(open(f))
+    with open(f) as jf:
+        a = json.load(jf)
     counts[a["severity"]] += 1
 
 # =============================
-# GENERATE SVG CHART
+# 4️⃣ GENERATE SVG CHART
 # =============================
-def bar_width(c):
+def w(c): 
     return max(c * 30, 10)
 
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
-  <rect x="10" y="15" width="{bar_width(counts['high'])}" height="20" fill="red"/>
-  <text x="170" y="30" fill="red">High ({counts['high']})</text>
+  <rect x="10" y="15" width="{w(counts['high'])}" height="20" fill="red"/>
+  <text x="{15 + w(counts['high'])}" y="30" fill="red">High ({counts['high']})</text>
 
-  <rect x="10" y="50" width="{bar_width(counts['medium'])}" height="20" fill="orange"/>
-  <text x="170" y="65" fill="orange">Medium ({counts['medium']})</text>
+  <rect x="10" y="50" width="{w(counts['medium'])}" height="20" fill="orange"/>
+  <text x="{15 + w(counts['medium'])}" y="65" fill="orange">Medium ({counts['medium']})</text>
 
-  <rect x="10" y="85" width="{bar_width(counts['low'])}" height="20" fill="green"/>
-  <text x="170" y="100" fill="green">Low ({counts['low']})</text>
+  <rect x="10" y="85" width="{w(counts['low'])}" height="20" fill="green"/>
+  <text x="{15 + w(counts['low'])}" y="100" fill="green">Low ({counts['low']})</text>
 </svg>
 """
 
-with open(CHARTS / "severity_chart.svg", "w") as f:
+chart_path = CHARTS / "severity_chart.svg"
+with open(chart_path, "w") as f:
     f.write(svg.strip())
 
-print("✅ SOC detection, lifecycle, and correlation automation complete.")
+# =============================
+# 5️⃣ BUILD README
+# =============================
+xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
+badge = f"https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue"
+
+readme = f"""
+# 🛡️ SOC Detection & Incident Data Automation
+
+![XP Badge]({badge})
+
+⚡ Simulates a professional Security Operations Center workflow with automated ticketing using 🎟️ Jira and ServiceNow, alert escalation 🚨 based on severity, and data-driven analytics 📊 for SIEM, SOAR, and incident response.
+
+## 🔹 Project Focus
+🎟️ Automated Ticketing & Alerts – Generates daily tickets in Jira/ServiceNow format and simulates real incident intake.
+🚨 Escalation & Prioritization – Automatically classifies alerts High 🔴 / Medium 🟠 / Low 🟢 for analyst prioritization.
+📈 Analytics & Visualization – Counts alerts, calculates XP points, and generates severity charts 📊.
+🔍 Data Analysis – Identifies patterns, recurring issues, and prioritizes incidents.
+⚙️ Automation – Fully automated via GitHub Actions to simulate daily SOC activity.
+🔍 Detection and Incident Correlation
+📐 SIEM Detection Rules – Structured detection rules identify suspicious activity.
+🔄 Incident Lifecycle Tracking – Tracks events from detection to resolution.
+🔗 Alert Correlation – Groups related alerts into single incidents to reduce noise.
+
+## 📊 Alert Analytics
+Severity Distribution
+
+| Severity | Count |
+|----------|-------|
+| 🔴 High  | {counts['high']} |
+| 🟠 Medium| {counts['medium']} |
+| 🟢 Low   | {counts['low']} |
+
+## 📈 Chart Display
+<img src="charts/severity_chart.svg" width="320" height="120" />
+
+## 🎟️ Recent Tickets / Alerts
+| Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |
+|------|---------------|------------|---------|-------|
+"""
+
+# Add recent alerts
+for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
+    a = json.load(open(f))
+    sev_icon = "🔴" if a["severity"]=="high" else "🟠" if a["severity"]=="medium" else "🟢"
+    readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev_icon} {a['severity'].capitalize()} | {a['event']} |\n"
+
+# =============================
+# 6️⃣ ADD DETECTION RULES
+# =============================
+readme += "\n## 🧰 Detection Rules\n\n"
+readme += "| Rule ID | Name | Severity | Description |\n"
+readme += "|---------|------|---------|-------------|\n"
+
+for f in sorted(DETECTIONS.glob("*.yml")):
+    rule = yaml.safe_load(open(f))
+    readme += f"| {rule['rule_id']} | {rule['name']} | {rule['severity'].capitalize()} | {rule['description']} |\n"
+
+# =============================
+# WRITE README
+# =============================
+with open(ROOT / "README.md", "w") as f:
+    f.write(readme.strip())
+
+print("✅ SOC daily simulation completed with detections")
+
 
