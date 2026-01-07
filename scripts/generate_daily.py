@@ -32,7 +32,7 @@ severity = random.choices(
     weights=[3, 4, 3]
 )[0]
 
-# ✅ Hybrid Jira + ServiceNow style
+# ✅ Hybrid Jira + ServiceNow style ticket ID
 ticket_id = f"SOC-INC{now.strftime('%Y%m%d')}-{random.randint(1000,9999)}"
 
 ticket = {
@@ -99,7 +99,7 @@ with open(chart_path, "w") as f:
     f.write(svg.strip())
 
 # =============================
-# 5️⃣ UPDATE README (DYNAMIC SECTION ONLY)
+# 5️⃣ UPDATE README (DYNAMIC TABLE ONLY)
 # =============================
 xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
 badge = f"https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue"
@@ -110,35 +110,45 @@ readme_path = ROOT / "README.md"
 with open(readme_path, "r") as f:
     lines = f.readlines()
 
-# Split into static & dynamic
-start_idx = 0
-end_idx = len(lines)
+# Locate the Recent Tickets table start
+start_idx = None
 for i, line in enumerate(lines):
-    if line.startswith("## 🎟️ Recent Tickets / Alerts"):
+    if line.startswith("| Date       | Ticket ID 🎟️"):
         start_idx = i
         break
 
-# Keep static lines, replace everything from 'Recent Tickets / Alerts' onwards
+# Locate table end
+end_idx = None
+for i in range(start_idx, len(lines)):
+    if lines[i].strip() == "" or lines[i].startswith("---"):
+        end_idx = i
+        break
+if end_idx is None:
+    end_idx = len(lines)
+
 readme_static = lines[:start_idx]
 
-dynamic_section = [
-    "## 🎟️ Recent Tickets / Alerts\n\n",
+# Build new table header
+table_lines = [
     "| Date       | Ticket ID 🎟️   | Alert ID 🚨        | Severity | Event                       |\n",
     "|------------|----------------|------------------|----------|-----------------------------|\n"
 ]
 
-# Add latest 5 tickets/alerts (most recent first)
+# Add latest 5 tickets/alerts
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
     t = json.load(open(TICKETS / f"{f.stem}.json"))
-    dynamic_section.append(
+    table_lines.append(
         f"| {f.stem} | {t['ticket_id']} | {a['alert_id']} | "
         f"{'🔴 High' if a['severity']=='high' else '🟠 Medium' if a['severity']=='medium' else '🟢 Low'} | {a['event']} |\n"
     )
 
-# Write back updated README
+# Keep everything after old table
+readme_tail = lines[end_idx:]
+
+# Write full README
 with open(readme_path, "w") as f:
-    f.writelines(readme_static + dynamic_section)
+    f.writelines(readme_static + table_lines + readme_tail)
 
 print("✅ SOC daily simulation completed with hybrid ticketing!")
 
