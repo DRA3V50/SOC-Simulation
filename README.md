@@ -41,17 +41,3 @@ Severity Distribution
 | Rule ID | Name | Severity | Description |
 |---------|------|---------|-------------|
 | DET-001 | Multiple Failed Logins | High | Detects multiple failed authentication attempts from the same host |
-
-
-
-
-
-
-# Test GitHub Stats
-
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=DRA3V50&show_icons=true&theme=tokyonight)
-
-![Profile Summary](https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=DRA3V50&theme=tokyonight)
-
-
-
