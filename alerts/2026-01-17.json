@@ -1,0 +1,7 @@
+{
+  "alert_id": "ALERT-20260117-9199",
+  "ticket_id": "SOC-INC20260117-3935",
+  "severity": "medium",
+  "event": "Simulated SOC event (medium)",
+  "timestamp": "2026-01-17T09:19:10.830675-05:00"
+}
