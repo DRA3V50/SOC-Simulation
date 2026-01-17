@@ -5,9 +5,9 @@
 - Simulates a professional Security Operations Center workflow with automated ticketing using 🎟️ Jira and ServiceNow, alert escalation 🚨 based on severity, and data-driven analytics 📊 for SIEM, SOAR, and incident response.
 
 ## 🔹 Project Focus and Incident Correlation
-- 🎟️ Automated Ticketing & Alerts – Generates daily tickets in Jira/ServiceNow format and simulates real incident intake.
+- ⚠️ Automated Ticketing & Alerts – Generates daily tickets in Jira/ServiceNow format and simulates real incident intake.
 - 🚨 Escalation & Prioritization – Automatically classifies alerts High 🔴 / Medium 🟠 / Low 🟢 for analyst prioritization.
-- 📈 Analytics & Visualization – Counts alerts, calculates XP points, and generates severity charts 📊.
+- 📈 Analytics & Visualization – Counts alerts, calculates XP points, and generates severity charts.
 - 🔍 Data Analysis – Identifies patterns, recurring issues, and prioritizes incidents.
 - ⚙️ Automation – Fully automated via GitHub Actions to simulate daily SOC activity.
 - ⚡ Detection and Incident Correlation
