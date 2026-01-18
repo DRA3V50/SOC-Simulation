@@ -5,6 +5,6 @@
   <rect x="10" y="50" width="120" height="20" fill="orange"/>
   <text x="135" y="65" fill="orange">Medium (4)</text>
 
-  <rect x="10" y="85" width="30" height="20" fill="green"/>
-  <text x="45" y="100" fill="green">Low (1)</text>
+  <rect x="10" y="85" width="60" height="20" fill="green"/>
+  <text x="75" y="100" fill="green">Low (2)</text>
 </svg>
