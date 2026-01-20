@@ -1,6 +1,6 @@
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
-  <rect x="10" y="15" width="210" height="20" fill="red"/>
-  <text x="225" y="30" fill="red">High (7)</text>
+  <rect x="10" y="15" width="240" height="20" fill="red"/>
+  <text x="255" y="30" fill="red">High (8)</text>
 
   <rect x="10" y="50" width="150" height="20" fill="orange"/>
   <text x="165" y="65" fill="orange">Medium (5)</text>
