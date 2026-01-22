@@ -1,6 +1,6 @@
 # 🛡️ SOC Detection & Incident Data Automation
 
-![XP Badge](https://img.shields.io/badge/XP:114%20H:8%20M:6%20L:2-blue)
+![XP Badge](https://img.shields.io/badge/XP:119%20H:8%20M:7%20L:2-blue)
 
 - Simulates a professional Security Operations Center workflow with automated ticketing using 🎟️ Jira and ServiceNow, alert escalation 🚨 based on severity, and data-driven analytics 📊 for SIEM, SOAR, and incident response.
 
@@ -21,7 +21,7 @@ Severity Distribution
 | Severity | Count |
 |----------|-------|
 | 🔴 High  | 8 |
-| 🟠 Medium| 6 |
+| 🟠 Medium| 7 |
 | 🟢 Low   | 2 |
 
 ## 📊 Chart Display
@@ -30,11 +30,11 @@ Severity Distribution
 ## 🎟️ Recent Tickets / Alerts
 | Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |
 |------|---------------|------------|---------|-------|
+| 2026-01-22 | SOC-INC20260122-8467 | ALERT-20260122-5117 | 🟠 Medium | Simulated SOC event (medium) |
 | 2026-01-21 | SOC-INC20260121-1476 | ALERT-20260121-5449 | 🟠 Medium | Simulated SOC event (medium) |
 | 2026-01-20 | SOC-INC20260120-6434 | ALERT-20260120-3977 | 🔴 High | Simulated SOC event (high) |
 | 2026-01-19 | SOC-INC20260119-5481 | ALERT-20260119-6474 | 🟠 Medium | Simulated SOC event (medium) |
 | 2026-01-18 | SOC-INC20260118-3615 | ALERT-20260118-9973 | 🟢 Low | Simulated SOC event (low) |
-| 2026-01-17 | SOC-INC20260117-3935 | ALERT-20260117-9199 | 🟠 Medium | Simulated SOC event (medium) |
 
 ## 🧰 Detection Rules
 
