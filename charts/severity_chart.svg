@@ -2,8 +2,8 @@
   <rect x="10" y="15" width="240" height="20" fill="red"/>
   <text x="255" y="30" fill="red">High (8)</text>
 
-  <rect x="10" y="50" width="240" height="20" fill="orange"/>
-  <text x="255" y="65" fill="orange">Medium (8)</text>
+  <rect x="10" y="50" width="270" height="20" fill="orange"/>
+  <text x="285" y="65" fill="orange">Medium (9)</text>
 
   <rect x="10" y="85" width="180" height="20" fill="green"/>
   <text x="195" y="100" fill="green">Low (6)</text>
