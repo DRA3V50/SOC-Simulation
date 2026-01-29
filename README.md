@@ -1,36 +1,43 @@
-# 🛡️ SOC Detection & Incident Automation
+# 🛡️ SOC-Analytics-Dashboard
 
-![XP Badge](https://img.shields.io/badge/XP:234%20H:14%20M:12%20L:17-blue)
+![XP Badge](https://img.shields.io/badge/XP:239%20🚨:14%20⚠️:13%20✅:17-blue)
 
 ---
 
-## 🔹 About This Repository
+## 🔹 Purpose
+SOC-Analytics-Dashboard simulates a **Security Operations Center (SOC)** for realistic incident tracking and blue team training.  
+It provides:
 
-This repository simulates a **modern Security Operations Center (SOC)** workflow, providing realistic alerting, ticketing, and incident tracking data. It is designed for:
+- Automated ticketing & alert generation  
+- Severity prioritization 🚨⚠️✅  
+- Tracking top hosts 🖥️  
+- Alert velocity monitoring ⏱️  
+- Daily dashboards with historical trends  
 
-- **SOC Training & Demonstrations** – simulate realistic alert flow for analysts.
-- **Automation Testing** – experiment with alert generation, incident correlation, and data-driven dashboards.
-- **Data Analytics & Visualization** – produce charts and tables for reporting KPIs.
-- **Integration with SIEM/SOAR Tools** – practice automated ticket creation, alert prioritization, and response simulation.
+---
 
-The system **automatically generates alerts and tickets**, tracks their **severity**, calculates **alert velocity**, and identifies the **most frequently triggered hosts**, providing a full end-to-end workflow experience.
+## 🧩 How It Works
+- **Telemetry:** Simulates alerts for multiple hosts  
+- **Analytics:** Counts severity, calculates percentages, and tracks top hosts  
+- **Visualization:** Generates color-coded SVG dashboards  
+- **Automation:** GitHub Actions updates daily; all data preserved
 
 ---
 
 ## 📊 Dashboard Overview
 
-<img src="charts/severity_chart.svg?20260128232309" width="320" />
-<table><tr><td valign='top'><b>Severity Overview</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Severity</th><th>Count</th><th>% of Total</th></tr><tr><td>🔴 High</td><td style='color:orange'>14</td><td>33%</td></tr><tr><td>🟠 Medium</td><td style='color:orange'>12</td><td>28%</td></tr><tr><td>🟢 Low</td><td style='color:orange'>17</td><td>40%</td></tr></table></td><td valign='top'><b>Top 5 Hosts</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Host</th><th>Count</th></tr><tr><td>HOST-29</td><td>2</td></tr><tr><td>HOST-67</td><td>2</td></tr><tr><td>HOST-25</td><td>1</td></tr><tr><td>HOST-45</td><td>1</td></tr><tr><td>HOST-66</td><td>1</td></tr></table></td><td valign='top'><b>Alert Velocity</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Window</th><th>Alerts</th></tr><tr><td>Last 24 Hours</td><td>21</td></tr><tr><td>All Time</td><td>43</td></tr></table></td></tr></table>
+<img src="charts/severity_chart.svg?20260128232611" width="320" />
+<table><tr><td valign='top'><b>Severity Overview</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Severity</th><th>Count</th><th>% of Total</th></tr><tr><td>🚨 High</td><td style='color:red; font-weight:bold;'>14</td><td>32%</td></tr><tr><td>⚠️ Medium</td><td style='color:orange; font-weight:bold;'>13</td><td>30%</td></tr><tr><td>✅ Low</td><td style='color:green; font-weight:bold;'>17</td><td>39%</td></tr></table></td><td valign='top'><b>Top 5 Hosts 🖥️</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Host</th><th>Count</th></tr><tr><td>HOST-29</td><td style='color:black; font-weight:bold;'>2</td></tr><tr><td>HOST-67</td><td style='color:black; font-weight:bold;'>2</td></tr><tr><td>HOST-25</td><td style='color:black; font-weight:bold;'>1</td></tr><tr><td>HOST-45</td><td style='color:black; font-weight:bold;'>1</td></tr><tr><td>HOST-66</td><td style='color:black; font-weight:bold;'>1</td></tr></table></td><td valign='top'><b>Alert Velocity ⏱️</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Window</th><th>Alerts</th></tr><tr><td>Last 24 Hours</td><td>22</td></tr><tr><td>All Time</td><td>44</td></tr></table></td></tr></table>
 
 ## 🎟️ Recent Alerts
 
 | Date | Ticket | Alert | Severity | Event |
 |------|--------|-------|---------|-------|
-| 2026-01-28_20260128232309 | SOC-INC20260128-4796 | ALERT-20260128-8181 | <span style='color:red'>🔴 High</span> | Simulated SOC event (high) |
-| 2026-01-28_20260128231951 | SOC-INC20260128-6433 | ALERT-20260128-2208 | <span style='color:green'>🟢 Low</span> | Simulated SOC event (low) |
-| 2026-01-28_20260128231732 | SOC-INC20260128-9933 | ALERT-20260128-2160 | <span style='color:orange'>🟠 Medium</span> | Simulated SOC event (medium) |
-| 2026-01-28_20260128231606 | SOC-INC20260128-1049 | ALERT-20260128-6566 | <span style='color:green'>🟢 Low</span> | Simulated SOC event (low) |
-| 2026-01-28_20260128231404 | SOC-INC20260128-2292 | ALERT-20260128-3693 | <span style='color:green'>🟢 Low</span> | Simulated SOC event (low) |
+| 2026-01-28_20260128232611 | SOC-INC20260128-1050 | ALERT-20260128-6946 | <span style='color:orange'>⚠️ Medium</span> | Simulated SOC event (medium) |
+| 2026-01-28_20260128232309 | SOC-INC20260128-4796 | ALERT-20260128-8181 | <span style='color:red'>🚨 High</span> | Simulated SOC event (high) |
+| 2026-01-28_20260128231951 | SOC-INC20260128-6433 | ALERT-20260128-2208 | <span style='color:green'>✅ Low</span> | Simulated SOC event (low) |
+| 2026-01-28_20260128231732 | SOC-INC20260128-9933 | ALERT-20260128-2160 | <span style='color:orange'>⚠️ Medium</span> | Simulated SOC event (medium) |
+| 2026-01-28_20260128231606 | SOC-INC20260128-1049 | ALERT-20260128-6566 | <span style='color:green'>✅ Low</span> | Simulated SOC event (low) |
 
 ## 🧰 Detection Rules
 
