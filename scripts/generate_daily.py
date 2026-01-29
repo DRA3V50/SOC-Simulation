@@ -122,6 +122,12 @@ readme = f"""
 
 ![XP Badge]({badge})
 
+This dashboard simulates a SOC workflow:
+- Tracks severity of alerts (counts + % of total)
+- Shows alert velocity (last 24 hours / all time)
+- Highlights the top hosts generating alerts
+- Displays recent alerts and detection rules
+
 ## 📈 Alert Analytics
 <img src="charts/severity_chart.svg?{run_id}" width="320" />
 """
@@ -180,12 +186,12 @@ for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
 top_table_html = make_html_table("Top 5 Hosts", ["Host","Count"], top_rows)
 
 # =============================
-# Layout: 3 tables side by side
+# Layout: 3 tables side by side (swapped Velocity & Hosts)
 # =============================
 readme += "<table><tr>"
-readme += f"<td valign='top'>{sev_table_html}</td>"
-readme += f"<td valign='top'>{vel_table_html}</td>"
-readme += f"<td valign='top'>{top_table_html}</td>"
+readme += f"<td valign='top'>{sev_table_html}</td>"      # Severity Overview first
+readme += f"<td valign='top'>{top_table_html}</td>"      # Top 5 Hosts second
+readme += f"<td valign='top'>{vel_table_html}</td>"      # Alert Velocity third
 readme += "</tr></table>\n"
 
 # =============================
@@ -211,4 +217,3 @@ for f in DETECTIONS.glob("*.yml"):
 
 (ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
-
