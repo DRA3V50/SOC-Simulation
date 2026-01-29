@@ -1,7 +1,7 @@
 {
-  "alert_id": "ALERT-20260128-9853",
-  "ticket_id": "SOC-INC20260128-8080",
-  "severity": "medium",
-  "event": "Simulated SOC event (medium)",
-  "timestamp": "2026-01-28T22:17:38.305108-05:00"
+  "alert_id": "ALERT-20260128-1763",
+  "ticket_id": "SOC-INC20260128-3121",
+  "severity": "high",
+  "event": "Simulated SOC event (high)",
+  "timestamp": "2026-01-28T22:18:55.575850-05:00"
 }
