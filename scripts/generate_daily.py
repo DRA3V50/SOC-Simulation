@@ -91,17 +91,17 @@ w = lambda c: int((c / max_count) * MAX_BAR_WIDTH)
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
 
-  <text x="{LABEL_X}" y="32" style="fill:red;">High</text>
+  <text x="{LABEL_X}" y="32" style="fill:red;">🚨 High</text>
   <rect x="{BAR_START_X}" y="15" width="{w(counts['high'])}" height="25" fill="red"/>
   <text x="{BAR_START_X + w(counts['high']) + 5}" y="32"
         style="fill:red; font-weight:bold;">{counts['high']}</text>
 
-  <text x="{LABEL_X}" y="67" style="fill:orange;">Medium</text>
+  <text x="{LABEL_X}" y="67" style="fill:orange;">⚠️ Medium</text>
   <rect x="{BAR_START_X}" y="50" width="{w(counts['medium'])}" height="25" fill="orange"/>
   <text x="{BAR_START_X + w(counts['medium']) + 5}" y="67"
         style="fill:orange; font-weight:bold;">{counts['medium']}</text>
 
-  <text x="{LABEL_X}" y="102" style="fill:green;">Low</text>
+  <text x="{LABEL_X}" y="102" style="fill:green;">✅ Low</text>
   <rect x="{BAR_START_X}" y="85" width="{w(counts['low'])}" height="25" fill="green"/>
   <text x="{BAR_START_X + w(counts['low']) + 5}" y="102"
         style="fill:green; font-weight:bold;">{counts['low']}</text>
@@ -115,25 +115,32 @@ svg = f"""
 # 5️⃣ README
 # =============================
 xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
-badge = f"https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue"
+badge = f"https://img.shields.io/badge/XP:{xp}%20🚨:{counts['high']}%20⚠️:{counts['medium']}%20✅:{counts['low']}-blue"
 
 readme = f"""
-# 🛡️ SOC Detection & Incident Automation
+# 🛡️ SOC-Analytics-Dashboard
 
 ![XP Badge]({badge})
 
 ---
 
-## 🔹 About This Repository
+## 🔹 Purpose
+SOC-Analytics-Dashboard simulates a **Security Operations Center (SOC)** for realistic incident tracking and blue team training.  
+It provides:
 
-This repository simulates a **modern Security Operations Center (SOC)** workflow, providing realistic alerting, ticketing, and incident tracking data. It is designed for:
+- Automated ticketing & alert generation  
+- Severity prioritization 🚨⚠️✅  
+- Tracking top hosts 🖥️  
+- Alert velocity monitoring ⏱️  
+- Daily dashboards with historical trends  
 
-- **SOC Training & Demonstrations** – simulate realistic alert flow for analysts.
-- **Automation Testing** – experiment with alert generation, incident correlation, and data-driven dashboards.
-- **Data Analytics & Visualization** – produce charts and tables for reporting KPIs.
-- **Integration with SIEM/SOAR Tools** – practice automated ticket creation, alert prioritization, and response simulation.
+---
 
-The system **automatically generates alerts and tickets**, tracks their **severity**, calculates **alert velocity**, and identifies the **most frequently triggered hosts**, providing a full end-to-end workflow experience.
+## 🧩 How It Works
+- **Telemetry:** Simulates alerts for multiple hosts  
+- **Analytics:** Counts severity, calculates percentages, and tracks top hosts  
+- **Visualization:** Generates color-coded SVG dashboards  
+- **Automation:** GitHub Actions updates daily; all data preserved
 
 ---
 
@@ -152,7 +159,9 @@ def make_html_table(title, headers, rows, colors=None):
     for i, r in enumerate(rows):
         html += "<tr>"
         for j, c in enumerate(r):
-            color = f" style='color:{colors[j]}'" if colors and j==1 else ""  # only color count column
+            color = ""
+            if colors and headers[j]=="Count":  # color the Count column
+                color = f" style='color:{colors[i]}; font-weight:bold;'"
             html += f"<td{color}>{c}</td>"
         html += "</tr>"
     html += "</table>"
@@ -168,7 +177,7 @@ sev_colors = []
 for sev in ["high","medium","low"]:
     pct = round((counts[sev]/total_alerts)*100)
     sev_rows.append([
-        "🔴 High" if sev=="high" else "🟠 Medium" if sev=="medium" else "🟢 Low",
+        "🚨 High" if sev=="high" else "⚠️ Medium" if sev=="medium" else "✅ Low",
         counts[sev],
         f"{pct}%"
     ])
@@ -181,7 +190,7 @@ vel_rows = [
     ["Last 24 Hours", alerts_24h],
     ["All Time", total_alerts]
 ]
-vel_table_html = make_html_table("Alert Velocity", ["Window","Alerts"], vel_rows)
+vel_table_html = make_html_table("Alert Velocity ⏱️", ["Window","Alerts"], vel_rows)
 
 # Top Hosts
 hosts = {}
@@ -193,18 +202,20 @@ for f in ALERTS.glob("*.json"):
     hosts[h] = hosts.get(h,0)+1
 
 top_rows = []
+top_colors = []
 for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
-    top_rows.append([h, c])
+    top_rows.append([h,c])
+    top_colors.append("black")
 
-top_table_html = make_html_table("Top 5 Hosts", ["Host","Count"], top_rows)
+top_table_html = make_html_table("Top 5 Hosts 🖥️", ["Host","Count"], top_rows, top_colors)
 
 # =============================
-# Layout: 3 tables side by side (Velocity & Hosts swapped)
+# Layout: 3 tables side by side (swap Velocity & Hosts)
 # =============================
 readme += "<table><tr>"
-readme += f"<td valign='top'>{sev_table_html}</td>"      # Severity Overview first
-readme += f"<td valign='top'>{top_table_html}</td>"      # Top Hosts second
-readme += f"<td valign='top'>{vel_table_html}</td>"      # Alert Velocity third
+readme += f"<td valign='top'>{sev_table_html}</td>"      
+readme += f"<td valign='top'>{top_table_html}</td>"      
+readme += f"<td valign='top'>{vel_table_html}</td>"      
 readme += "</tr></table>\n"
 
 # =============================
@@ -215,9 +226,9 @@ readme += "| Date | Ticket | Alert | Severity | Event |\n"
 readme += "|------|--------|-------|---------|-------|\n"
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
-    sev_text = f"<span style='color:red'>🔴 High</span>" if a["severity"]=="high" else \
-               f"<span style='color:orange'>🟠 Medium</span>" if a["severity"]=="medium" else \
-               f"<span style='color:green'>🟢 Low</span>"
+    sev_text = f"<span style='color:red'>🚨 High</span>" if a["severity"]=="high" else \
+               f"<span style='color:orange'>⚠️ Medium</span>" if a["severity"]=="medium" else \
+               f"<span style='color:green'>✅ Low</span>"
     event_text = a['event'].replace("|", "\\|")
     readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev_text} | {event_text} |\n"
 
@@ -232,3 +243,4 @@ for f in DETECTIONS.glob("*.yml"):
 
 (ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
+
