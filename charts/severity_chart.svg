@@ -12,7 +12,7 @@
 
   <!-- Low -->
   <text x="10" y="102" fill="green">Low</text>
-  <rect x="120" y="85" width="106" height="25" fill="green"/>
-  <text x="231" y="102" fill="green">6</text>
+  <rect x="120" y="85" width="124" height="25" fill="green"/>
+  <text x="249" y="102" fill="green">7</text>
 
 </svg>
