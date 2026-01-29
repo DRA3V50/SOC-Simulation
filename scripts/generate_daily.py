@@ -1,6 +1,6 @@
 from pathlib import Path
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import random
 import yaml
@@ -24,20 +24,15 @@ for d in [ALERTS, TICKETS, CHARTS, PLAYBOOKS, DETECTIONS, CORRELATIONS]:
 # =============================
 now = datetime.now(ZoneInfo("America/New_York"))
 today = now.strftime("%Y-%m-%d")
-run_id = now.strftime("%Y%m%d%H%M%S")  # cache-buster
+run_id = now.strftime("%Y%m%d%H%M%S")
 
 # =============================
 # 1️⃣ CREATE TODAY'S TICKET
 # =============================
 ticket_path = TICKETS / f"{today}_{run_id}.json"
 
-ticket_id_num = random.randint(1000, 9999)
-ticket_id = f"SOC-INC{today.replace('-', '')}-{ticket_id_num}"
-
-severity = random.choices(
-    ["high", "medium", "low"],
-    weights=[3, 4, 3]
-)[0]
+ticket_id = f"SOC-INC{today.replace('-', '')}-{random.randint(1000,9999)}"
+severity = random.choices(["high", "medium", "low"], weights=[3,4,3])[0]
 
 ticket = {
     "ticket_id": ticket_id,
@@ -47,19 +42,15 @@ ticket = {
     "event": f"Simulated SOC event ({severity})"
 }
 
-with open(ticket_path, "w") as f:
-    json.dump(ticket, f, indent=2)
+json.dump(ticket, open(ticket_path, "w"), indent=2)
 
 # =============================
 # 2️⃣ CREATE ALERT
 # =============================
 alert_path = ALERTS / f"{today}_{run_id}.json"
 
-alert_id_num = random.randint(1000, 9999)
-alert_id = f"ALERT-{today.replace('-', '')}-{alert_id_num}"
-
 alert = {
-    "alert_id": alert_id,
+    "alert_id": f"ALERT-{today.replace('-', '')}-{random.randint(1000,9999)}",
     "ticket_id": ticket["ticket_id"],
     "severity": severity,
     "event": ticket["event"],
@@ -67,8 +58,7 @@ alert = {
     "system": ticket["system"]
 }
 
-with open(alert_path, "w") as f:
-    json.dump(alert, f, indent=2)
+json.dump(alert, open(alert_path, "w"), indent=2)
 
 # =============================
 # 3️⃣ COUNT SEVERITIES
@@ -76,51 +66,55 @@ with open(alert_path, "w") as f:
 counts = {"high": 0, "medium": 0, "low": 0}
 
 for f in ALERTS.glob("*.json"):
-    with open(f) as jf:
-        a = json.load(jf)
+    a = json.load(open(f))
     counts[a["severity"]] += 1
 
 # =============================
-# 4️⃣ GENERATE SVG BAR CHART (LAST 5 TICKETS)
+# 3a️⃣ ALERT VELOCITY
+# =============================
+last_24h = now - timedelta(hours=24)
+alerts_24h = 0
+alerts_total = 0
+
+for f in ALERTS.glob("*.json"):
+    a = json.load(open(f))
+    alerts_total += 1
+    ts = datetime.fromisoformat(a["timestamp"])
+    if ts >= last_24h:
+        alerts_24h += 1
+
+# =============================
+# 4️⃣ GENERATE SVG CHART
 # =============================
 MAX_BAR_WIDTH = 160
 BAR_START_X = 120
 LABEL_X = 10
 
 max_count = max(counts.values()) or 1
-
-def w(c):
-    return int((c / max_count) * MAX_BAR_WIDTH)
+w = lambda c: int((c / max_count) * MAX_BAR_WIDTH)
 
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
-
-  <!-- High -->
   <text x="{LABEL_X}" y="32" fill="red">High</text>
   <rect x="{BAR_START_X}" y="15" width="{w(counts['high'])}" height="25" fill="red"/>
-  <text x="{BAR_START_X + w(counts['high']) + 5}" y="32" fill="red">{counts['high']}</text>
+  <text x="{BAR_START_X + w(counts['high']) + 5}" y="32">{counts['high']}</text>
 
-  <!-- Medium -->
   <text x="{LABEL_X}" y="67" fill="orange">Medium</text>
   <rect x="{BAR_START_X}" y="50" width="{w(counts['medium'])}" height="25" fill="orange"/>
-  <text x="{BAR_START_X + w(counts['medium']) + 5}" y="67" fill="orange">{counts['medium']}</text>
+  <text x="{BAR_START_X + w(counts['medium']) + 5}" y="67">{counts['medium']}</text>
 
-  <!-- Low -->
   <text x="{LABEL_X}" y="102" fill="green">Low</text>
   <rect x="{BAR_START_X}" y="85" width="{w(counts['low'])}" height="25" fill="green"/>
-  <text x="{BAR_START_X + w(counts['low']) + 5}" y="102" fill="green">{counts['low']}</text>
-
+  <text x="{BAR_START_X + w(counts['low']) + 5}" y="102">{counts['low']}</text>
 </svg>
 """
 
-chart_path = CHARTS / "severity_chart.svg"
-with open(chart_path, "w") as f:
-    f.write(svg.strip())
+(CHARTS / "severity_chart.svg").write_text(svg.strip())
 
 # =============================
-# 5️⃣ GENERATE README
+# 5️⃣ README
 # =============================
-xp = counts["high"] * 10 + counts["medium"] * 5 + counts["low"] * 2
+xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
 badge = f"https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue"
 
 readme = f"""
@@ -129,29 +123,22 @@ readme = f"""
 ![XP Badge]({badge})
 
 ## 📈 Alert Analytics
-
-<img src="charts/severity_chart.svg?{run_id}" width="320" height="120" />
+<img src="charts/severity_chart.svg?{run_id}" width="320" />
 """
 
 # =============================
-# 5a️⃣ Side-by-side Severity Tables
+# 5a️⃣ SIDE-BY-SIDE TABLES
 # =============================
-total_alerts = sum(counts.values()) or 1
+total = sum(counts.values()) or 1
 
-# Build counts table
-counts_table = "| Severity | Count |\n|----------|-------|\n"
-for sev in ["high", "medium", "low"]:
-    emoji = "🔴 High" if sev == "high" else "🟠 Medium" if sev == "medium" else "🟢 Low"
-    counts_table += f"| {emoji} | {counts[sev]} |\n"
+counts_tbl = "| Severity | Count |\n|---|---|\n"
+perc_tbl = "| Severity | Count | % |\n|---|---|---|\n"
 
-# Build % table
-perc_table = "| Severity | Count | % of Total |\n|----------|-------|------------|\n"
-for sev in ["high", "medium", "low"]:
-    emoji = "🔴 High" if sev == "high" else "🟠 Medium" if sev == "medium" else "🟢 Low"
-    perc = round((counts[sev] / total_alerts) * 100)
-    perc_table += f"| {emoji} | {counts[sev]} | {perc}% |\n"
+for sev in ["high","medium","low"]:
+    emoji = "🔴 High" if sev=="high" else "🟠 Medium" if sev=="medium" else "🟢 Low"
+    counts_tbl += f"| {emoji} | {counts[sev]} |\n"
+    perc_tbl += f"| {emoji} | {counts[sev]} | {round((counts[sev]/total)*100)}% |\n"
 
-# Wrap in side-by-side HTML
 readme += f"""
 <table>
 <tr>
@@ -159,14 +146,14 @@ readme += f"""
 
 **Severity Counts**
 
-{counts_table}
+{counts_tbl}
 
 </td>
 <td>
 
 **Severity % of Total**
 
-{perc_table}
+{perc_tbl}
 
 </td>
 </tr>
@@ -174,52 +161,48 @@ readme += f"""
 """
 
 # =============================
-# 5b️⃣ Recent Tickets / Alerts
+# 5b️⃣ ALERT VELOCITY
 # =============================
-readme += "\n## 🎟️ Recent Tickets / Alerts\n"
-readme += "| Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |\n"
-readme += "|------|---------------|------------|---------|-------|\n"
+readme += f"""
+## ⏱️ Alert Velocity
+
+| Window | Alerts |
+|-------|--------|
+| Last 24 Hours | {alerts_24h} |
+| All Time | {alerts_total} |
+"""
+
+# =============================
+# 5c️⃣ RECENT ALERTS
+# =============================
+readme += "\n## 🎟️ Recent Alerts\n| Date | Ticket | Alert | Severity | Event |\n|---|---|---|---|---|\n"
 
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
-    sev = a["severity"]
-    emoji = "🔴 High" if sev == "high" else "🟠 Medium" if sev == "medium" else "🟢 Low"
-    readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {emoji} | {a['event']} |\n"
+    sev = "🔴 High" if a["severity"]=="high" else "🟠 Medium" if a["severity"]=="medium" else "🟢 Low"
+    readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev} | {a['event']} |\n"
 
 # =============================
-# 5c️⃣ Top 5 Hosts by Alerts
+# 5d️⃣ TOP HOSTS
 # =============================
-host_counts = {}
+hosts = {}
 for f in ALERTS.glob("*.json"):
     a = json.load(open(f))
-    host = a.get("system", "UNKNOWN_HOST")  # safe for older alerts
-    host_counts[host] = host_counts.get(host, 0) + 1
+    h = a.get("system","UNKNOWN_HOST")
+    hosts[h] = hosts.get(h,0)+1
 
-top_hosts = sorted(host_counts.items(), key=lambda x: x[1], reverse=True)[:5]
-
-host_table = "\n## 🖥️ Top 5 Hosts by Alerts\n\n"
-host_table += "| Host | Alert Count |\n|------|------------|\n"
-for host, count in top_hosts:
-    host_table += f"| {host} | {count} |\n"
-
-readme += host_table
+readme += "\n## 🖥️ Top 5 Hosts by Alerts\n| Host | Count |\n|---|---|\n"
+for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
+    readme += f"| {h} | {c} |\n"
 
 # =============================
 # 6️⃣ DETECTION RULES
 # =============================
-readme += "\n## 🧰 Detection Rules\n\n"
-readme += "| Rule ID | Name | Severity | Description |\n"
-readme += "|---------|------|---------|-------------|\n"
-
+readme += "\n## 🧰 Detection Rules\n| Rule ID | Name | Severity | Description |\n|---|---|---|---|\n"
 for f in DETECTIONS.glob("*.yml"):
-    with open(f) as yf:
-        d = yaml.safe_load(yf)
-        readme += f"| {d.get('rule_id')} | {d.get('name')} | {d.get('severity').capitalize()} | {d.get('description')} |\n"
+    d = yaml.safe_load(open(f))
+    readme += f"| {d.get('rule_id')} | {d.get('name')} | {d.get('severity').capitalize()} | {d.get('description')} |\n"
 
-# =============================
-# 7️⃣ SAVE README
-# =============================
-with open(ROOT / "README.md", "w") as f:
-    f.write(readme.strip())
-
+(ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
+
