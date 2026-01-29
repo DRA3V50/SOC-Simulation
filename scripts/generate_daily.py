@@ -74,7 +74,6 @@ total_alerts = sum(counts.values()) or 1
 # =============================
 last_24h = now - timedelta(hours=24)
 alerts_24h = 0
-
 for f in ALERTS.glob("*.json"):
     a = json.load(open(f))
     if datetime.fromisoformat(a["timestamp"]) >= last_24h:
@@ -208,4 +207,3 @@ for f in DETECTIONS.glob("*.yml"):
 
 (ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
-
