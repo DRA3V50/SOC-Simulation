@@ -86,14 +86,14 @@ def w(c):
 
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
-  <rect x="50" y="15" width="{w(counts['high'])}" height="30" fill="red"/>
-  <text x="{50 + w(counts['high'])}" y="30" fill="red">High ({counts['high']})</text>
+  <rect x="100" y="15" width="{w(counts['high'])}" height="25" fill="red"/>
+  <text x="{100 + w(counts['high'])}" y="30" fill="red">High ({counts['high']})</text>
 
-  <rect x="50" y="50" width="{w(counts['medium'])}" height="30" fill="orange"/>
-  <text x="{50 + w(counts['medium'])}" y="65" fill="orange">Medium ({counts['medium']})</text>
+  <rect x="100" y="50" width="{w(counts['medium'])}" height="25" fill="orange"/>
+  <text x="{100 + w(counts['medium'])}" y="65" fill="orange">Medium ({counts['medium']})</text>
 
-  <rect x="50" y="85" width="{w(counts['low'])}" height="30" fill="green"/>
-  <text x="{50 + w(counts['low'])}" y="100" fill="green">Low ({counts['low']})</text>
+  <rect x="100" y="85" width="{w(counts['low'])}" height="25" fill="green"/>
+  <text x="{100 + w(counts['low'])}" y="100" fill="green">Low ({counts['low']})</text>
 </svg>
 """
 
