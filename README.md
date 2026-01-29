@@ -30,7 +30,7 @@ Severity Distribution
 ## 🎟️ Recent Tickets / Alerts
 | Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |
 |------|---------------|------------|---------|-------|
-| 2026-01-28 | SOC-INC20260128-3075 | ALERT-20260128-9056 | 🟠 Medium | Simulated SOC event (medium) |
+| 2026-01-28 | SOC-INC20260128-8713 | ALERT-20260128-3953 | 🟠 Medium | Simulated SOC event (medium) |
 | 2026-01-27 | SOC-INC20260127-6734 | ALERT-20260127-5536 | 🟠 Medium | Simulated SOC event (medium) |
 | 2026-01-26 | SOC-INC20260126-6847 | ALERT-20260126-8506 | 🟢 Low | Simulated SOC event (low) |
 | 2026-01-25 | SOC-INC20260125-4342 | ALERT-20260125-2792 | 🟢 Low | Simulated SOC event (low) |
