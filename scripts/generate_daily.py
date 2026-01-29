@@ -1,6 +1,6 @@
 from pathlib import Path
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import random
 import yaml
@@ -24,7 +24,7 @@ for d in [ALERTS, TICKETS, CHARTS, PLAYBOOKS, DETECTIONS, CORRELATIONS]:
 # =============================
 now = datetime.now(ZoneInfo("America/New_York"))
 today = now.strftime("%Y-%m-%d")
-run_id = now.strftime("%Y%m%d%H%M%S")  # unique per run
+run_id = now.strftime("%Y%m%d%H%M%S")  # cache-buster
 
 # =============================
 # 1️⃣ CREATE TODAY'S TICKET
@@ -63,7 +63,8 @@ alert = {
     "ticket_id": ticket["ticket_id"],
     "severity": severity,
     "event": ticket["event"],
-    "timestamp": now.isoformat()
+    "timestamp": now.isoformat(),
+    "system": ticket["system"]
 }
 
 with open(alert_path, "w") as f:
@@ -80,7 +81,7 @@ for f in ALERTS.glob("*.json"):
     counts[a["severity"]] += 1
 
 # =============================
-# 4️⃣ GENERATE SVG CHART (PROPORTIONAL)
+# 4️⃣ GENERATE SVG BAR CHART (LAST 5 TICKETS)
 # =============================
 MAX_BAR_WIDTH = 160
 BAR_START_X = 120
@@ -128,6 +129,7 @@ readme = f"""
 ![XP Badge]({badge})
 
 ## 📈 Alert Analytics
+Severity Distribution
 
 | Severity | Count |
 |----------|-------|
@@ -136,17 +138,51 @@ readme = f"""
 | 🟢 Low   | {counts['low']} |
 
 <img src="charts/severity_chart.svg?{run_id}" width="320" height="120" />
-
-## 🎟️ Recent Tickets / Alerts
-| Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |
-|------|---------------|------------|---------|-------|
 """
+
+# =============================
+# 5a️⃣ Add optional % column
+# =============================
+total_alerts = sum(counts.values()) or 1
+perc_table = "\n## 📊 Severity Distribution with %\n\n"
+perc_table += "| Severity | Count | % of Total |\n|----------|-------|------------|\n"
+for sev in ["high", "medium", "low"]:
+    emoji = "🔴 High" if sev == "high" else "🟠 Medium" if sev == "medium" else "🟢 Low"
+    perc = round((counts[sev] / total_alerts) * 100)
+    perc_table += f"| {emoji} | {counts[sev]} | {perc}% |\n"
+
+readme += perc_table
+
+# =============================
+# 5b️⃣ Recent Tickets / Alerts
+# =============================
+readme += "\n## 🎟️ Recent Tickets / Alerts\n"
+readme += "| Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |\n"
+readme += "|------|---------------|------------|---------|-------|\n"
 
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
     sev = a["severity"]
     emoji = "🔴 High" if sev == "high" else "🟠 Medium" if sev == "medium" else "🟢 Low"
     readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {emoji} | {a['event']} |\n"
+
+# =============================
+# 5c️⃣ Top 5 Hosts by Alerts
+# =============================
+host_counts = {}
+for f in ALERTS.glob("*.json"):
+    a = json.load(open(f))
+    host = a["system"]
+    host_counts[host] = host_counts.get(host, 0) + 1
+
+top_hosts = sorted(host_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+
+host_table = "\n## 🖥️ Top 5 Hosts by Alerts\n\n"
+host_table += "| Host | Alert Count |\n|------|------------|\n"
+for host, count in top_hosts:
+    host_table += f"| {host} | {count} |\n"
+
+readme += host_table
 
 # =============================
 # 6️⃣ DETECTION RULES
@@ -167,3 +203,4 @@ with open(ROOT / "README.md", "w") as f:
     f.write(readme.strip())
 
 print("✅ SOC daily simulation updated successfully")
+
