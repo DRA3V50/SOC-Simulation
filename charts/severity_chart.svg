@@ -1,9 +1,9 @@
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
 
   <text x="10" y="32" style="fill:red;">High</text>
-  <rect x="120" y="15" width="122" height="25" fill="red"/>
-  <text x="247" y="32"
-        style="fill:red; font-weight:bold;">13</text>
+  <rect x="120" y="15" width="131" height="25" fill="red"/>
+  <text x="256" y="32"
+        style="fill:red; font-weight:bold;">14</text>
 
   <text x="10" y="67" style="fill:orange;">Medium</text>
   <rect x="120" y="50" width="112" height="25" fill="orange"/>
