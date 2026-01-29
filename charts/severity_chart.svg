@@ -6,9 +6,9 @@
         style="fill:red; font-weight:bold;">15</text>
 
   <text x="10" y="67" style="fill:orange;">🟠 Medium</text>
-  <rect x="120" y="50" width="131" height="25" fill="orange"/>
-  <text x="256" y="67"
-        style="fill:orange; font-weight:bold;">14</text>
+  <rect x="120" y="50" width="141" height="25" fill="orange"/>
+  <text x="266" y="67"
+        style="fill:orange; font-weight:bold;">15</text>
 
   <text x="10" y="102" style="fill:green;">🟢 Low</text>
   <rect x="120" y="85" width="160" height="25" fill="green"/>
