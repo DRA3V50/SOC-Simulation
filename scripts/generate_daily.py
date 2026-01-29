@@ -125,30 +125,47 @@ readme = f"""
 
 ## 📈 Alert Analytics
 <img src="charts/severity_chart.svg?{run_id}" width="320" />
-
 """
 
 # =============================
-# 5a️⃣ SEVERITY OVERVIEW TABLE
+# Helper to make HTML tables
 # =============================
-severity_table = "| Severity | Count | % of Total |\n|---|---|---|\n"
+def make_html_table(title, headers, rows, colors=None):
+    html = f"<b>{title}</b><br>"
+    html += "<table border='1' cellpadding='5' cellspacing='0'>"
+    html += "<tr>" + "".join([f"<th>{h}</th>" for h in headers]) + "</tr>"
+    for i, r in enumerate(rows):
+        color = f" style='color:{colors[i]}'" if colors else ""
+        html += "<tr>" + "".join([f"<td{color}>{c}</td>" for c in r]) + "</tr>"
+    html += "</table>"
+    return html
+
+# =============================
+# Build tables
+# =============================
+
+# Severity Overview
+sev_rows = []
+sev_colors = []
 for sev in ["high","medium","low"]:
-    emoji = "🔴 High" if sev=="high" else "🟠 Medium" if sev=="medium" else "🟢 Low"
-    pct = round((counts[sev] / total_alerts) * 100)
-    severity_table += f"| {emoji} | {counts[sev]} | {pct}% |\n"
+    pct = round((counts[sev]/total_alerts)*100)
+    sev_rows.append([
+        "🔴 High" if sev=="high" else "🟠 Medium" if sev=="medium" else "🟢 Low",
+        counts[sev],
+        f"{pct}%"
+    ])
+    sev_colors.append("red" if sev=="high" else "orange" if sev=="medium" else "green")
 
-# =============================
-# 5b️⃣ VELOCITY TABLE
-# =============================
-velocity_table = f"""| Window | Alerts |
-|---|---|
-| Last 24 Hours | {alerts_24h} |
-| All Time | {total_alerts} |
-"""
+sev_table_html = make_html_table("Severity Overview", ["Severity","Count","% of Total"], sev_rows, sev_colors)
 
-# =============================
-# 5c️⃣ TOP HOSTS TABLE
-# =============================
+# Alert Velocity
+vel_rows = [
+    ["Last 24 Hours", alerts_24h],
+    ["All Time", total_alerts]
+]
+vel_table_html = make_html_table("Alert Velocity", ["Window","Alerts"], vel_rows)
+
+# Top Hosts
 hosts = {}
 for f in ALERTS.glob("*.json"):
     a = json.load(open(f))
@@ -157,36 +174,27 @@ for f in ALERTS.glob("*.json"):
         continue
     hosts[h] = hosts.get(h,0)+1
 
-top_hosts_table = "| Host | Count |\n|---|---|\n"
+top_rows = []
 for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
-    top_hosts_table += f"| {h} | {c} |\n"
+    top_rows.append([h, c])
+
+top_table_html = make_html_table("Top 5 Hosts", ["Host","Count"], top_rows)
 
 # =============================
-# 5d️⃣ LAYOUT: 3 TABLES SIDE BY SIDE
+# Layout: 3 tables side by side
 # =============================
 readme += f"""
 <div style="display:flex; justify-content:center; gap:50px;">
 
-<div>
-<b>Severity Overview</b>
-{severity_table}
-</div>
-
-<div>
-<b>Alert Velocity</b>
-{velocity_table}
-</div>
-
-<div>
-<b>Top 5 Hosts</b>
-{top_hosts_table}
-</div>
+<div>{sev_table_html}</div>
+<div>{vel_table_html}</div>
+<div>{top_table_html}</div>
 
 </div>
 """
 
 # =============================
-# 5e️⃣ RECENT ALERTS
+# Recent Alerts
 # =============================
 readme += "\n## 🎟️ Recent Alerts\n| Date | Ticket | Alert | Severity | Event |\n|---|---|---|---|---|\n"
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
@@ -195,7 +203,7 @@ for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev} | {a['event']} |\n"
 
 # =============================
-# 6️⃣ DETECTION RULES
+# Detection Rules
 # =============================
 readme += "\n## 🧰 Detection Rules\n| Rule ID | Name | Severity | Description |\n|---|---|---|---|\n"
 for f in DETECTIONS.glob("*.yml"):
