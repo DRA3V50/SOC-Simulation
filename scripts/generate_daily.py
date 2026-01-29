@@ -118,30 +118,43 @@ xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
 badge = f"https://img.shields.io/badge/XP:{xp}%20H:{counts['high']}%20M:{counts['medium']}%20L:{counts['low']}-blue"
 
 readme = f"""
-# 🛡️ SOC Detection & Incident Data Automation
+# 🛡️ SOC Detection & Incident Automation
 
 ![XP Badge]({badge})
 
-This dashboard simulates a SOC workflow:
-- Tracks severity of alerts (counts + % of total)
-- Shows alert velocity (last 24 hours / all time)
-- Highlights the top hosts generating alerts
-- Displays recent alerts and detection rules
+---
 
-## 📈 Alert Analytics
+## 🔹 About This Repository
+
+This repository simulates a **modern Security Operations Center (SOC)** workflow, providing realistic alerting, ticketing, and incident tracking data. It is designed for:
+
+- **SOC Training & Demonstrations** – simulate realistic alert flow for analysts.
+- **Automation Testing** – experiment with alert generation, incident correlation, and data-driven dashboards.
+- **Data Analytics & Visualization** – produce charts and tables for reporting KPIs.
+- **Integration with SIEM/SOAR Tools** – practice automated ticket creation, alert prioritization, and response simulation.
+
+The system **automatically generates alerts and tickets**, tracks their **severity**, calculates **alert velocity**, and identifies the **most frequently triggered hosts**, providing a full end-to-end workflow experience.
+
+---
+
+## 📊 Dashboard Overview
+
 <img src="charts/severity_chart.svg?{run_id}" width="320" />
 """
 
 # =============================
-# Helper to make HTML tables
+# Helper to make HTML tables with color
 # =============================
 def make_html_table(title, headers, rows, colors=None):
     html = f"<b>{title}</b><br>"
     html += "<table border='1' cellpadding='5' cellspacing='0'>"
     html += "<tr>" + "".join([f"<th>{h}</th>" for h in headers]) + "</tr>"
     for i, r in enumerate(rows):
-        color = f" style='color:{colors[i]}'" if colors else ""
-        html += "<tr>" + "".join([f"<td{color}>{c}</td>" for c in r]) + "</tr>"
+        html += "<tr>"
+        for j, c in enumerate(r):
+            color = f" style='color:{colors[j]}'" if colors and j==1 else ""  # only color count column
+            html += f"<td{color}>{c}</td>"
+        html += "</tr>"
     html += "</table>"
     return html
 
@@ -186,28 +199,30 @@ for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
 top_table_html = make_html_table("Top 5 Hosts", ["Host","Count"], top_rows)
 
 # =============================
-# Layout: 3 tables side by side (swapped Velocity & Hosts)
+# Layout: 3 tables side by side (Velocity & Hosts swapped)
 # =============================
 readme += "<table><tr>"
 readme += f"<td valign='top'>{sev_table_html}</td>"      # Severity Overview first
-readme += f"<td valign='top'>{top_table_html}</td>"      # Top 5 Hosts second
+readme += f"<td valign='top'>{top_table_html}</td>"      # Top Hosts second
 readme += f"<td valign='top'>{vel_table_html}</td>"      # Alert Velocity third
 readme += "</tr></table>\n"
 
 # =============================
-# Recent Alerts (Markdown table fixed)
+# Recent Alerts (Markdown table)
 # =============================
 readme += "\n## 🎟️ Recent Alerts\n\n"
 readme += "| Date | Ticket | Alert | Severity | Event |\n"
 readme += "|------|--------|-------|---------|-------|\n"
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
-    sev = "🔴 High" if a["severity"]=="high" else "🟠 Medium" if a["severity"]=="medium" else "🟢 Low"
-    event_text = a['event'].replace("|", "\\|")  # escape pipes
-    readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev} | {event_text} |\n"
+    sev_text = f"<span style='color:red'>🔴 High</span>" if a["severity"]=="high" else \
+               f"<span style='color:orange'>🟠 Medium</span>" if a["severity"]=="medium" else \
+               f"<span style='color:green'>🟢 Low</span>"
+    event_text = a['event'].replace("|", "\\|")
+    readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev_text} | {event_text} |\n"
 
 # =============================
-# Detection Rules (Markdown table)
+# Detection Rules
 # =============================
 readme += "\n## 🧰 Detection Rules\n\n"
 readme += "| Rule ID | Name | Severity | Description |\n|---|---|---|---|\n"
