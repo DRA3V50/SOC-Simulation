@@ -29,7 +29,6 @@ today = now.strftime("%Y-%m-%d")
 # =============================
 ticket_path = TICKETS / f"{today}.json"
 
-# Generate Jira/ServiceNow style ticket ID
 ticket_id_num = random.randint(1000, 9999)
 ticket_id = f"SOC-INC{today.replace('-', '')}-{ticket_id_num}"
 
@@ -79,21 +78,40 @@ for f in ALERTS.glob("*.json"):
     counts[a["severity"]] += 1
 
 # =============================
-# 4️⃣ GENERATE SVG CHART
+# 4️⃣ GENERATE SVG CHART (FIXED)
 # =============================
+
+MAX_BAR_WIDTH = 160
+BAR_START_X = 120
+LABEL_X = 10
+
 def w(c):
-    return max(c * 30, 10)
+    return min(c * 20, MAX_BAR_WIDTH)
 
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
-  <rect x="100" y="15" width="{w(counts['high'])}" height="25" fill="red"/>
-  <text x="{100 + w(counts['high'])}" y="30" fill="red">High ({counts['high']})</text>
 
-  <rect x="100" y="50" width="{w(counts['medium'])}" height="25" fill="orange"/>
-  <text x="{100 + w(counts['medium'])}" y="65" fill="orange">Medium ({counts['medium']})</text>
+  <!-- High -->
+  <text x="{LABEL_X}" y="32" fill="red">High</text>
+  <rect x="{BAR_START_X}" y="15" width="{w(counts['high'])}" height="25" fill="red"/>
+  <text x="{BAR_START_X + w(counts['high']) + 5}" y="32" fill="red">
+    {counts['high']}
+  </text>
 
-  <rect x="100" y="85" width="{w(counts['low'])}" height="25" fill="green"/>
-  <text x="{100 + w(counts['low'])}" y="100" fill="green">Low ({counts['low']})</text>
+  <!-- Medium -->
+  <text x="{LABEL_X}" y="67" fill="orange">Medium</text>
+  <rect x="{BAR_START_X}" y="50" width="{w(counts['medium'])}" height="25" fill="orange"/>
+  <text x="{BAR_START_X + w(counts['medium']) + 5}" y="67" fill="orange">
+    {counts['medium']}
+  </text>
+
+  <!-- Low -->
+  <text x="{LABEL_X}" y="102" fill="green">Low</text>
+  <rect x="{BAR_START_X}" y="85" width="{w(counts['low'])}" height="25" fill="green"/>
+  <text x="{BAR_START_X + w(counts['low']) + 5}" y="102" fill="green">
+    {counts['low']}
+  </text>
+
 </svg>
 """
 
@@ -115,15 +133,11 @@ readme = f"""
 - Simulates a professional Security Operations Center workflow with automated ticketing using 🎟️ Jira and ServiceNow, alert escalation 🚨 based on severity, and data-driven analytics 📊 for SIEM, SOAR, and incident response.
 
 ## 🔹 Project Focus and Incident Correlation
-- 🎟️ Automated Ticketing & Alerts – Generates daily tickets in Jira/ServiceNow format and simulates real incident intake.
-- 🚨 Escalation & Prioritization – Automatically classifies alerts High 🔴 / Medium 🟠 / Low 🟢 for analyst prioritization.
-- 📈 Analytics & Visualization – Counts alerts, calculates XP points, and generates severity charts 📊.
-- 🔍 Data Analysis – Identifies patterns, recurring issues, and prioritizes incidents.
-- ⚙️ Automation – Fully automated via GitHub Actions to simulate daily SOC activity.
-- ⚡ Detection and Incident Correlation
-- 📐 SIEM Detection Rules – Structured detection rules identify suspicious activity.
-- 🔄 Incident Lifecycle Tracking – Tracks events from detection to resolution.
-- 🔗 Alert Correlation – Groups related alerts into single incidents to reduce noise.
+- 🎟️ Automated Ticketing & Alerts
+- 🚨 Escalation & Prioritization
+- 📈 Analytics & Visualization
+- 🔍 Data Analysis
+- ⚙️ Automation
 
 ## 📈 Alert Analytics
 Severity Distribution
@@ -142,7 +156,6 @@ Severity Distribution
 |------|---------------|------------|---------|-------|
 """
 
-# Add last 5 alerts
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
     readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {'🔴 High' if a['severity']=='high' else '🟠 Medium' if a['severity']=='medium' else '🟢 Low'} | {a['event']} |\n"
@@ -154,7 +167,6 @@ readme += "\n## 🧰 Detection Rules\n\n"
 readme += "| Rule ID | Name | Severity | Description |\n"
 readme += "|---------|------|---------|-------------|\n"
 
-# Loop through detection YAML files
 import yaml
 for f in DETECTIONS.glob("*.yml"):
     with open(f) as yf:
@@ -168,4 +180,3 @@ with open(ROOT / "README.md", "w") as f:
     f.write(readme.strip())
 
 print("✅ SOC daily simulation updated successfully")
-
