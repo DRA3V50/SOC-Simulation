@@ -78,10 +78,13 @@ for f in ALERTS.glob("*.json"):
     counts[a["severity"]] += 1
 
 # =============================
-# 4️⃣ GENERATE SVG CHART (FIXED)
+# 4️⃣ GENERATE SVG CHART (FIXED + PROPORTIONAL)
 # =============================
 
 MAX_BAR_WIDTH = 160
+BAR_START_X = 120
+LABEL_X = 10
+
 max_count = max(counts.values()) or 1
 
 def w(c):
@@ -93,23 +96,17 @@ svg = f"""
   <!-- High -->
   <text x="{LABEL_X}" y="32" fill="red">High</text>
   <rect x="{BAR_START_X}" y="15" width="{w(counts['high'])}" height="25" fill="red"/>
-  <text x="{BAR_START_X + w(counts['high']) + 5}" y="32" fill="red">
-    {counts['high']}
-  </text>
+  <text x="{BAR_START_X + w(counts['high']) + 5}" y="32" fill="red">{counts['high']}</text>
 
   <!-- Medium -->
   <text x="{LABEL_X}" y="67" fill="orange">Medium</text>
   <rect x="{BAR_START_X}" y="50" width="{w(counts['medium'])}" height="25" fill="orange"/>
-  <text x="{BAR_START_X + w(counts['medium']) + 5}" y="67" fill="orange">
-    {counts['medium']}
-  </text>
+  <text x="{BAR_START_X + w(counts['medium']) + 5}" y="67" fill="orange">{counts['medium']}</text>
 
   <!-- Low -->
   <text x="{LABEL_X}" y="102" fill="green">Low</text>
   <rect x="{BAR_START_X}" y="85" width="{w(counts['low'])}" height="25" fill="green"/>
-  <text x="{BAR_START_X + w(counts['low']) + 5}" y="102" fill="green">
-    {counts['low']}
-  </text>
+  <text x="{BAR_START_X + w(counts['low']) + 5}" y="102" fill="green">{counts['low']}</text>
 
 </svg>
 """
