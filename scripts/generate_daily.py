@@ -129,29 +129,49 @@ readme = f"""
 ![XP Badge]({badge})
 
 ## 📈 Alert Analytics
-Severity Distribution
-
-| Severity | Count |
-|----------|-------|
-| 🔴 High  | {counts['high']} |
-| 🟠 Medium| {counts['medium']} |
-| 🟢 Low   | {counts['low']} |
 
 <img src="charts/severity_chart.svg?{run_id}" width="320" height="120" />
 """
 
 # =============================
-# 5a️⃣ Add optional % column
+# 5a️⃣ Side-by-side Severity Tables
 # =============================
 total_alerts = sum(counts.values()) or 1
-perc_table = "\n## 📊 Severity Distribution with %\n\n"
-perc_table += "| Severity | Count | % of Total |\n|----------|-------|------------|\n"
+
+# Build counts table
+counts_table = "| Severity | Count |\n|----------|-------|\n"
+for sev in ["high", "medium", "low"]:
+    emoji = "🔴 High" if sev == "high" else "🟠 Medium" if sev == "medium" else "🟢 Low"
+    counts_table += f"| {emoji} | {counts[sev]} |\n"
+
+# Build % table
+perc_table = "| Severity | Count | % of Total |\n|----------|-------|------------|\n"
 for sev in ["high", "medium", "low"]:
     emoji = "🔴 High" if sev == "high" else "🟠 Medium" if sev == "medium" else "🟢 Low"
     perc = round((counts[sev] / total_alerts) * 100)
     perc_table += f"| {emoji} | {counts[sev]} | {perc}% |\n"
 
-readme += perc_table
+# Wrap in side-by-side HTML
+readme += f"""
+<table>
+<tr>
+<td>
+
+**Severity Counts**
+
+{counts_table}
+
+</td>
+<td>
+
+**Severity % of Total**
+
+{perc_table}
+
+</td>
+</tr>
+</table>
+"""
 
 # =============================
 # 5b️⃣ Recent Tickets / Alerts
@@ -203,4 +223,3 @@ with open(ROOT / "README.md", "w") as f:
     f.write(readme.strip())
 
 print("✅ SOC daily simulation updated successfully")
-
