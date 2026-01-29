@@ -1,10 +1,24 @@
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
-  <rect x="100" y="15" width="240" height="25" fill="red"/>
-  <text x="340" y="30" fill="red">High (8)</text>
 
-  <rect x="100" y="50" width="270" height="25" fill="orange"/>
-  <text x="370" y="65" fill="orange">Medium (9)</text>
+  <!-- High -->
+  <text x="10" y="32" fill="red">High</text>
+  <rect x="120" y="15" width="160" height="25" fill="red"/>
+  <text x="285" y="32" fill="red">
+    9
+  </text>
 
-  <rect x="100" y="85" width="180" height="25" fill="green"/>
-  <text x="280" y="100" fill="green">Low (6)</text>
+  <!-- Medium -->
+  <text x="10" y="67" fill="orange">Medium</text>
+  <rect x="120" y="50" width="160" height="25" fill="orange"/>
+  <text x="285" y="67" fill="orange">
+    8
+  </text>
+
+  <!-- Low -->
+  <text x="10" y="102" fill="green">Low</text>
+  <rect x="120" y="85" width="120" height="25" fill="green"/>
+  <text x="245" y="102" fill="green">
+    6
+  </text>
+
 </svg>
