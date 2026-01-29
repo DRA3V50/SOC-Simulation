@@ -82,11 +82,10 @@ for f in ALERTS.glob("*.json"):
 # =============================
 
 MAX_BAR_WIDTH = 160
-BAR_START_X = 120
-LABEL_X = 10
+max_count = max(counts.values()) or 1
 
 def w(c):
-    return min(c * 20, MAX_BAR_WIDTH)
+    return int((c / max_count) * MAX_BAR_WIDTH)
 
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
