@@ -1,7 +1,7 @@
 {
-  "ticket_id": "SOC-INC20260128-3121",
-  "created": "2026-01-28T22:18:55.575850-05:00",
-  "severity": "high",
-  "system": "HOST-74",
-  "event": "Simulated SOC event (high)"
+  "ticket_id": "SOC-INC20260128-9396",
+  "created": "2026-01-28T22:21:20.320548-05:00",
+  "severity": "medium",
+  "system": "HOST-68",
+  "event": "Simulated SOC event (medium)"
 }
