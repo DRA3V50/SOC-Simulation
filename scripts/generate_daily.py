@@ -125,10 +125,11 @@ readme = f"""
 
 ## 📈 Alert Analytics
 <img src="charts/severity_chart.svg?{run_id}" width="320" />
+
 """
 
 # =============================
-# 5a️⃣ SEVERITY OVERVIEW
+# 5a️⃣ SEVERITY OVERVIEW TABLE
 # =============================
 severity_table = "| Severity | Count | % of Total |\n|---|---|---|\n"
 for sev in ["high","medium","low"]:
@@ -137,16 +138,17 @@ for sev in ["high","medium","low"]:
     severity_table += f"| {emoji} | {counts[sev]} | {pct}% |\n"
 
 # =============================
-# 5b️⃣ VELOCITY + TOP HOSTS (SIDE BY SIDE)
+# 5b️⃣ VELOCITY TABLE
 # =============================
-# Velocity table
 velocity_table = f"""| Window | Alerts |
 |---|---|
 | Last 24 Hours | {alerts_24h} |
 | All Time | {total_alerts} |
 """
 
-# Top hosts table
+# =============================
+# 5c️⃣ TOP HOSTS TABLE
+# =============================
 hosts = {}
 for f in ALERTS.glob("*.json"):
     a = json.load(open(f))
@@ -159,32 +161,32 @@ top_hosts_table = "| Host | Count |\n|---|---|\n"
 for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
     top_hosts_table += f"| {h} | {c} |\n"
 
-# Put Velocity and Top Hosts together in one box
+# =============================
+# 5d️⃣ LAYOUT: 3 TABLES SIDE BY SIDE
+# =============================
 readme += f"""
-<table>
-<tr>
-<td>
+<div style="display:flex; justify-content:center; gap:50px;">
 
+<div>
 <b>Severity Overview</b>
-
 {severity_table}
+</div>
 
-</td>
-<td>
-
-<b>Velocity & Top Hosts</b>
-
+<div>
+<b>Alert Velocity</b>
 {velocity_table}
+</div>
 
+<div>
+<b>Top 5 Hosts</b>
 {top_hosts_table}
+</div>
 
-</td>
-</tr>
-</table>
+</div>
 """
 
 # =============================
-# 5c️⃣ RECENT ALERTS
+# 5e️⃣ RECENT ALERTS
 # =============================
 readme += "\n## 🎟️ Recent Alerts\n| Date | Ticket | Alert | Severity | Event |\n|---|---|---|---|---|\n"
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
@@ -202,5 +204,3 @@ for f in DETECTIONS.glob("*.yml"):
 
 (ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
-
-
