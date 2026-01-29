@@ -32,7 +32,7 @@ run_id = now.strftime("%Y%m%d%H%M%S")
 ticket_path = TICKETS / f"{today}_{run_id}.json"
 ticket_id = f"SOC-INC{today.replace('-', '')}-{random.randint(1000,9999)}"
 severity = random.choices(["high","medium","low"], weights=[3,4,3])[0]
-system_host = f"HOST-{random.randint(10,99)}"  # Always assign a host
+system_host = f"HOST-{random.randint(10,99)}"
 
 ticket = {
     "ticket_id": ticket_id,
@@ -54,7 +54,7 @@ alert = {
     "severity": severity,
     "event": ticket["event"],
     "timestamp": now.isoformat(),
-    "system": ticket["system"]  # Always assigned
+    "system": ticket["system"]
 }
 
 json.dump(alert, open(alert_path, "w"), indent=2)
@@ -81,7 +81,7 @@ for f in ALERTS.glob("*.json"):
         alerts_24h += 1
 
 # =============================
-# 4️⃣ SVG CHART (GITHUB SAFE)
+# 4️⃣ SVG CHART
 # =============================
 MAX_BAR_WIDTH = 160
 BAR_START_X = 120
@@ -128,7 +128,7 @@ readme = f"""
 """
 
 # =============================
-# 5a️⃣ OVERVIEW + VELOCITY
+# 5a️⃣ SEVERITY OVERVIEW
 # =============================
 severity_table = "| Severity | Count | % of Total |\n|---|---|---|\n"
 for sev in ["high","medium","low"]:
@@ -136,12 +136,30 @@ for sev in ["high","medium","low"]:
     pct = round((counts[sev] / total_alerts) * 100)
     severity_table += f"| {emoji} | {counts[sev]} | {pct}% |\n"
 
+# =============================
+# 5b️⃣ VELOCITY + TOP HOSTS (SIDE BY SIDE)
+# =============================
+# Velocity table
 velocity_table = f"""| Window | Alerts |
 |---|---|
 | Last 24 Hours | {alerts_24h} |
 | All Time | {total_alerts} |
 """
 
+# Top hosts table
+hosts = {}
+for f in ALERTS.glob("*.json"):
+    a = json.load(open(f))
+    h = a.get("system")
+    if not h:
+        continue
+    hosts[h] = hosts.get(h,0)+1
+
+top_hosts_table = "| Host | Count |\n|---|---|\n"
+for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
+    top_hosts_table += f"| {h} | {c} |\n"
+
+# Put Velocity and Top Hosts together in one box
 readme += f"""
 <table>
 <tr>
@@ -154,9 +172,11 @@ readme += f"""
 </td>
 <td>
 
-<b>Alert Velocity</b>
+<b>Velocity & Top Hosts</b>
 
 {velocity_table}
+
+{top_hosts_table}
 
 </td>
 </tr>
@@ -164,28 +184,13 @@ readme += f"""
 """
 
 # =============================
-# 5b️⃣ RECENT ALERTS
+# 5c️⃣ RECENT ALERTS
 # =============================
 readme += "\n## 🎟️ Recent Alerts\n| Date | Ticket | Alert | Severity | Event |\n|---|---|---|---|---|\n"
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
     sev = "🔴 High" if a["severity"]=="high" else "🟠 Medium" if a["severity"]=="medium" else "🟢 Low"
     readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev} | {a['event']} |\n"
-
-# =============================
-# 5c️⃣ TOP HOSTS
-# =============================
-hosts = {}
-for f in ALERTS.glob("*.json"):
-    a = json.load(open(f))
-    h = a.get("system")
-    if not h:
-        continue  # skip missing host
-    hosts[h] = hosts.get(h,0)+1
-
-readme += "\n## 🖥️ Top 5 Hosts by Alerts\n| Host | Count |\n|---|---|\n"
-for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
-    readme += f"| {h} | {c} |\n"
 
 # =============================
 # 6️⃣ DETECTION RULES
@@ -197,4 +202,5 @@ for f in DETECTIONS.glob("*.yml"):
 
 (ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
+
 
