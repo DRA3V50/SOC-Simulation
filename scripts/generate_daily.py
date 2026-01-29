@@ -91,17 +91,17 @@ w = lambda c: int((c / max_count) * MAX_BAR_WIDTH)
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
 
-  <text x="{LABEL_X}" y="32" style="fill:red;">🚨 High</text>
+  <text x="{LABEL_X}" y="32" style="fill:red;">🔴 High</text>
   <rect x="{BAR_START_X}" y="15" width="{w(counts['high'])}" height="25" fill="red"/>
   <text x="{BAR_START_X + w(counts['high']) + 5}" y="32"
         style="fill:red; font-weight:bold;">{counts['high']}</text>
 
-  <text x="{LABEL_X}" y="67" style="fill:orange;">⚠️ Medium</text>
+  <text x="{LABEL_X}" y="67" style="fill:orange;">🟠 Medium</text>
   <rect x="{BAR_START_X}" y="50" width="{w(counts['medium'])}" height="25" fill="orange"/>
   <text x="{BAR_START_X + w(counts['medium']) + 5}" y="67"
         style="fill:orange; font-weight:bold;">{counts['medium']}</text>
 
-  <text x="{LABEL_X}" y="102" style="fill:green;">✅ Low</text>
+  <text x="{LABEL_X}" y="102" style="fill:green;">🟢 Low</text>
   <rect x="{BAR_START_X}" y="85" width="{w(counts['low'])}" height="25" fill="green"/>
   <text x="{BAR_START_X + w(counts['low']) + 5}" y="102"
         style="fill:green; font-weight:bold;">{counts['low']}</text>
@@ -115,7 +115,7 @@ svg = f"""
 # 5️⃣ README
 # =============================
 xp = counts["high"]*10 + counts["medium"]*5 + counts["low"]*2
-badge = f"https://img.shields.io/badge/XP:{xp}%20🚨:{counts['high']}%20⚠️:{counts['medium']}%20✅:{counts['low']}-blue"
+badge = f"https://img.shields.io/badge/XP:{xp}%20🔴:{counts['high']}%20🟠:{counts['medium']}%20🟢:{counts['low']}-blue"
 
 readme = f"""
 # 🛡️ SOC-Analytics-Dashboard
@@ -124,23 +124,24 @@ readme = f"""
 
 ---
 
-## 🔹 Purpose
-SOC-Analytics-Dashboard simulates a **Security Operations Center (SOC)** for realistic incident tracking and blue team training.  
-It provides:
+## 🎯 Purpose
+SOC-Analytics-Dashboard simulates a **Security Operations Center (SOC)** environment with automated ticketing and alert tracking.  
+It helps blue teams **analyze trends, prioritize incidents, and monitor high-risk hosts** in a controlled environment.
 
-- Automated ticketing & alert generation  
-- Severity prioritization 🚨⚠️✅  
-- Tracking top hosts 🖥️  
-- Alert velocity monitoring ⏱️  
-- Daily dashboards with historical trends  
+- Simulates realistic SOC alerts 🔴🟠🟢  
+- Prioritizes by severity  
+- Tracks top hosts 🖥️  
+- Monitors alert velocity ⏱️  
+- Produces daily dashboards with historical trends 📈  
 
 ---
 
-## 🧩 How It Works
-- **Telemetry:** Simulates alerts for multiple hosts  
-- **Analytics:** Counts severity, calculates percentages, and tracks top hosts  
-- **Visualization:** Generates color-coded SVG dashboards  
-- **Automation:** GitHub Actions updates daily; all data preserved
+## ⚡ How SOC Simulation Works
+- **Event Generation:** Simulates alerts and tickets for multiple systems  
+- **Severity Analytics:** Counts alerts by high/medium/low and calculates percentages  
+- **Host Monitoring:** Tracks top 5 hosts generating the most alerts 🖥️  
+- **Velocity Tracking:** Measures alert trends for last 24 hours & all-time ⏱️  
+- **Visualization:** Color-coded SVG charts & tables for fast comprehension
 
 ---
 
@@ -177,7 +178,7 @@ sev_colors = []
 for sev in ["high","medium","low"]:
     pct = round((counts[sev]/total_alerts)*100)
     sev_rows.append([
-        "🚨 High" if sev=="high" else "⚠️ Medium" if sev=="medium" else "✅ Low",
+        "🔴 High" if sev=="high" else "🟠 Medium" if sev=="medium" else "🟢 Low",
         counts[sev],
         f"{pct}%"
     ])
@@ -226,9 +227,7 @@ readme += "| Date | Ticket | Alert | Severity | Event |\n"
 readme += "|------|--------|-------|---------|-------|\n"
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
-    sev_text = f"<span style='color:red'>🚨 High</span>" if a["severity"]=="high" else \
-               f"<span style='color:orange'>⚠️ Medium</span>" if a["severity"]=="medium" else \
-               f"<span style='color:green'>✅ Low</span>"
+    sev_text = "🔴 High" if a["severity"]=="high" else "🟠 Medium" if a["severity"]=="medium" else "🟢 Low"
     event_text = a['event'].replace("|", "\\|")
     readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev_text} | {event_text} |\n"
 
@@ -243,4 +242,3 @@ for f in DETECTIONS.glob("*.yml"):
 
 (ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
-
