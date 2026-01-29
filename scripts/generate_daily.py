@@ -24,7 +24,7 @@ for d in [ALERTS, TICKETS, CHARTS, PLAYBOOKS, DETECTIONS, CORRELATIONS]:
 # =============================
 now = datetime.now(ZoneInfo("America/New_York"))
 today = now.strftime("%Y-%m-%d")
-run_id = now.strftime("%Y%m%d%H%M%S")
+run_id = now.strftime("%Y%m%d%H%M%S")  # unique per run
 
 # =============================
 # 1️⃣ CREATE TODAY'S TICKET
@@ -135,7 +135,7 @@ readme = f"""
 | 🟠 Medium| {counts['medium']} |
 | 🟢 Low   | {counts['low']} |
 
-<img src="charts/severity_chart.svg" width="320" height="120" />
+<img src="charts/severity_chart.svg?{run_id}" width="320" height="120" />
 
 ## 🎟️ Recent Tickets / Alerts
 | Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |
