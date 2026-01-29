@@ -180,18 +180,18 @@ for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
 top_table_html = make_html_table("Top 5 Hosts", ["Host","Count"], top_rows)
 
 # =============================
-# Layout: 3 tables side by side using outer table
+# Layout: 3 tables side by side
 # =============================
 readme += "<table><tr>"
 readme += f"<td valign='top'>{sev_table_html}</td>"
 readme += f"<td valign='top'>{vel_table_html}</td>"
 readme += f"<td valign='top'>{top_table_html}</td>"
-readme += "</tr></table>"
+readme += "</tr></table>\n"
 
 # =============================
 # Recent Alerts (Markdown table fixed)
 # =============================
-readme += "\n## 🎟️ Recent Alerts\n"
+readme += "\n## 🎟️ Recent Alerts\n\n"
 readme += "| Date | Ticket | Alert | Severity | Event |\n"
 readme += "|------|--------|-------|---------|-------|\n"
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
@@ -203,7 +203,8 @@ for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
 # =============================
 # Detection Rules (Markdown table)
 # =============================
-readme += "\n## 🧰 Detection Rules\n| Rule ID | Name | Severity | Description |\n|---|---|---|---|\n"
+readme += "\n## 🧰 Detection Rules\n\n"
+readme += "| Rule ID | Name | Severity | Description |\n|---|---|---|---|\n"
 for f in DETECTIONS.glob("*.yml"):
     d = yaml.safe_load(open(f))
     readme += f"| {d.get('rule_id')} | {d.get('name')} | {d.get('severity').capitalize()} | {d.get('description')} |\n"
