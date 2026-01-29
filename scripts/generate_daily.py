@@ -183,22 +183,25 @@ top_table_html = make_html_table("Top 5 Hosts", ["Host","Count"], top_rows)
 # Layout: 3 tables side by side using outer table
 # =============================
 readme += "<table><tr>"
-readme += f"<td>{sev_table_html}</td>"
-readme += f"<td>{vel_table_html}</td>"
-readme += f"<td>{top_table_html}</td>"
+readme += f"<td valign='top'>{sev_table_html}</td>"
+readme += f"<td valign='top'>{vel_table_html}</td>"
+readme += f"<td valign='top'>{top_table_html}</td>"
 readme += "</tr></table>"
 
 # =============================
-# Recent Alerts
+# Recent Alerts (Markdown table fixed)
 # =============================
-readme += "\n## 🎟️ Recent Alerts\n| Date | Ticket | Alert | Severity | Event |\n|---|---|---|---|---|\n"
+readme += "\n## 🎟️ Recent Alerts\n"
+readme += "| Date | Ticket | Alert | Severity | Event |\n"
+readme += "|------|--------|-------|---------|-------|\n"
 for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
     a = json.load(open(f))
     sev = "🔴 High" if a["severity"]=="high" else "🟠 Medium" if a["severity"]=="medium" else "🟢 Low"
-    readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev} | {a['event']} |\n"
+    event_text = a['event'].replace("|", "\\|")  # escape pipes
+    readme += f"| {f.stem} | {a['ticket_id']} | {a['alert_id']} | {sev} | {event_text} |\n"
 
 # =============================
-# Detection Rules
+# Detection Rules (Markdown table)
 # =============================
 readme += "\n## 🧰 Detection Rules\n| Rule ID | Name | Severity | Description |\n|---|---|---|---|\n"
 for f in DETECTIONS.glob("*.yml"):
@@ -207,3 +210,4 @@ for f in DETECTIONS.glob("*.yml"):
 
 (ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
+
