@@ -181,17 +181,13 @@ for h,c in sorted(hosts.items(), key=lambda x:x[1], reverse=True)[:5]:
 top_table_html = make_html_table("Top 5 Hosts", ["Host","Count"], top_rows)
 
 # =============================
-# Layout: 3 tables side by side
+# Layout: 3 tables side by side using outer table
 # =============================
-readme += f"""
-<div style="display:flex; justify-content:center; gap:50px;">
-
-<div>{sev_table_html}</div>
-<div>{vel_table_html}</div>
-<div>{top_table_html}</div>
-
-</div>
-"""
+readme += "<table><tr>"
+readme += f"<td>{sev_table_html}</td>"
+readme += f"<td>{vel_table_html}</td>"
+readme += f"<td>{top_table_html}</td>"
+readme += "</tr></table>"
 
 # =============================
 # Recent Alerts
@@ -212,3 +208,4 @@ for f in DETECTIONS.glob("*.yml"):
 
 (ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
+
