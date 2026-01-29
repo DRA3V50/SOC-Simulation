@@ -1,6 +1,6 @@
 from pathlib import Path
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 from zoneinfo import ZoneInfo
 import random
 import yaml
@@ -172,7 +172,7 @@ for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
 host_counts = {}
 for f in ALERTS.glob("*.json"):
     a = json.load(open(f))
-    host = a["system"]
+    host = a.get("system", "UNKNOWN_HOST")  # safe for older alerts
     host_counts[host] = host_counts.get(host, 0) + 1
 
 top_hosts = sorted(host_counts.items(), key=lambda x: x[1], reverse=True)[:5]
