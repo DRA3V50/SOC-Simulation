@@ -66,16 +66,16 @@ for f in ALERTS.glob("*.json"):
     a = json.load(open(f))
     counts[a["severity"]] += 1
 
+total_alerts = sum(counts.values()) or 1
+
 # =============================
 # 3a️⃣ ALERT VELOCITY
 # =============================
 last_24h = now - timedelta(hours=24)
 alerts_24h = 0
-alerts_total = 0
 
 for f in ALERTS.glob("*.json"):
     a = json.load(open(f))
-    alerts_total += 1
     if datetime.fromisoformat(a["timestamp"]) >= last_24h:
         alerts_24h += 1
 
@@ -127,22 +127,18 @@ readme = f"""
 """
 
 # =============================
-# 5a️⃣ DISTRIBUTION + VELOCITY (2 BOXES)
+# 5a️⃣ OVERVIEW + VELOCITY
 # =============================
-total = sum(counts.values()) or 1
-
-counts_tbl = "| Severity | Count |\n|---|---|\n"
-perc_tbl = "| Severity | Count | % |\n|---|---|---|\n"
-
+severity_table = "| Severity | Count | % of Total |\n|---|---|---|\n"
 for sev in ["high","medium","low"]:
     emoji = "🔴 High" if sev=="high" else "🟠 Medium" if sev=="medium" else "🟢 Low"
-    counts_tbl += f"| {emoji} | {counts[sev]} |\n"
-    perc_tbl += f"| {emoji} | {counts[sev]} | {round((counts[sev]/total)*100)}% |\n"
+    pct = round((counts[sev] / total_alerts) * 100)
+    severity_table += f"| {emoji} | {counts[sev]} | {pct}% |\n"
 
-velocity_tbl = f"""| Window | Alerts |
+velocity_table = f"""| Window | Alerts |
 |---|---|
 | Last 24 Hours | {alerts_24h} |
-| All Time | {alerts_total} |
+| All Time | {total_alerts} |
 """
 
 readme += f"""
@@ -150,20 +146,16 @@ readme += f"""
 <tr>
 <td>
 
-<b>Severity Distribution</b>
+<b>Severity Overview</b>
 
-{counts_tbl}
-
-<br/>
-
-{perc_tbl}
+{severity_table}
 
 </td>
 <td>
 
 <b>Alert Velocity</b>
 
-{velocity_tbl}
+{velocity_table}
 
 </td>
 </tr>
@@ -202,3 +194,4 @@ for f in DETECTIONS.glob("*.yml"):
 
 (ROOT / "README.md").write_text(readme.strip())
 print("✅ SOC daily simulation updated successfully")
+
