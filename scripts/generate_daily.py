@@ -80,7 +80,7 @@ for f in ALERTS.glob("*.json"):
         alerts_24h += 1
 
 # =============================
-# 4️⃣ SVG CHART (INLINE STYLE FIX)
+# 4️⃣ SVG CHART (GITHUB SAFE)
 # =============================
 MAX_BAR_WIDTH = 160
 BAR_START_X = 120
@@ -127,7 +127,7 @@ readme = f"""
 """
 
 # =============================
-# 5a️⃣ SIDE-BY-SIDE TABLES
+# 5a️⃣ DISTRIBUTION + VELOCITY (2 BOXES)
 # =============================
 total = sum(counts.values()) or 1
 
@@ -150,21 +150,18 @@ readme += f"""
 <tr>
 <td>
 
-**Severity Counts**
+<b>Severity Distribution</b>
 
 {counts_tbl}
 
-</td>
-<td>
-
-**Severity % of Total**
+<br/>
 
 {perc_tbl}
 
 </td>
 <td>
 
-**Alert Velocity**
+<b>Alert Velocity</b>
 
 {velocity_tbl}
 
