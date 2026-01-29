@@ -80,7 +80,7 @@ for f in ALERTS.glob("*.json"):
         alerts_24h += 1
 
 # =============================
-# 4️⃣ SVG CHART (COLOR FIXED)
+# 4️⃣ SVG CHART (INLINE STYLE FIX)
 # =============================
 MAX_BAR_WIDTH = 160
 BAR_START_X = 120
@@ -91,17 +91,20 @@ w = lambda c: int((c / max_count) * MAX_BAR_WIDTH)
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
 
-  <text x="{LABEL_X}" y="32" fill="red">High</text>
+  <text x="{LABEL_X}" y="32" style="fill:red;">High</text>
   <rect x="{BAR_START_X}" y="15" width="{w(counts['high'])}" height="25" fill="red"/>
-  <text x="{BAR_START_X + w(counts['high']) + 5}" y="32" fill="red">{counts['high']}</text>
+  <text x="{BAR_START_X + w(counts['high']) + 5}" y="32"
+        style="fill:red; font-weight:bold;">{counts['high']}</text>
 
-  <text x="{LABEL_X}" y="67" fill="orange">Medium</text>
+  <text x="{LABEL_X}" y="67" style="fill:orange;">Medium</text>
   <rect x="{BAR_START_X}" y="50" width="{w(counts['medium'])}" height="25" fill="orange"/>
-  <text x="{BAR_START_X + w(counts['medium']) + 5}" y="67" fill="orange">{counts['medium']}</text>
+  <text x="{BAR_START_X + w(counts['medium']) + 5}" y="67"
+        style="fill:orange; font-weight:bold;">{counts['medium']}</text>
 
-  <text x="{LABEL_X}" y="102" fill="green">Low</text>
+  <text x="{LABEL_X}" y="102" style="fill:green;">Low</text>
   <rect x="{BAR_START_X}" y="85" width="{w(counts['low'])}" height="25" fill="green"/>
-  <text x="{BAR_START_X + w(counts['low']) + 5}" y="102" fill="green">{counts['low']}</text>
+  <text x="{BAR_START_X + w(counts['low']) + 5}" y="102"
+        style="fill:green; font-weight:bold;">{counts['low']}</text>
 
 </svg>
 """
@@ -124,7 +127,7 @@ readme = f"""
 """
 
 # =============================
-# 5a️⃣ SIDE-BY-SIDE TABLES (3)
+# 5a️⃣ SIDE-BY-SIDE TABLES
 # =============================
 total = sum(counts.values()) or 1
 
