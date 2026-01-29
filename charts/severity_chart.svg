@@ -2,23 +2,17 @@
 
   <!-- High -->
   <text x="10" y="32" fill="red">High</text>
-  <rect x="120" y="15" width="160" height="25" fill="red"/>
-  <text x="285" y="32" fill="red">
-    9
-  </text>
+  <rect x="120" y="15" width="142" height="25" fill="red"/>
+  <text x="267" y="32" fill="red">8</text>
 
   <!-- Medium -->
   <text x="10" y="67" fill="orange">Medium</text>
   <rect x="120" y="50" width="160" height="25" fill="orange"/>
-  <text x="285" y="67" fill="orange">
-    8
-  </text>
+  <text x="285" y="67" fill="orange">9</text>
 
   <!-- Low -->
   <text x="10" y="102" fill="green">Low</text>
-  <rect x="120" y="85" width="120" height="25" fill="green"/>
-  <text x="245" y="102" fill="green">
-    6
-  </text>
+  <rect x="120" y="85" width="106" height="25" fill="green"/>
+  <text x="231" y="102" fill="green">6</text>
 
 </svg>
