@@ -25,7 +25,7 @@ Severity Distribution
 | 🟢 Low   | 6 |
 
 ## 📊 Chart Display
-<img src="charts/severity_chart.svg" width="500" height="120" />
+<img src="charts/severity_chart.svg" width="320" height="120" />
 
 ## 🎟️ Recent Tickets / Alerts
 | Date | Ticket ID 🎟️ | Alert ID 🚨 | Severity | Event |
