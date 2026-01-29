@@ -6,9 +6,9 @@
         style="fill:red; font-weight:bold;">13</text>
 
   <text x="10" y="67" style="fill:orange;">Medium</text>
-  <rect x="120" y="50" width="110" height="25" fill="orange"/>
-  <text x="235" y="67"
-        style="fill:orange; font-weight:bold;">11</text>
+  <rect x="120" y="50" width="120" height="25" fill="orange"/>
+  <text x="245" y="67"
+        style="fill:orange; font-weight:bold;">12</text>
 
   <text x="10" y="102" style="fill:green;">Low</text>
   <rect x="120" y="85" width="160" height="25" fill="green"/>
