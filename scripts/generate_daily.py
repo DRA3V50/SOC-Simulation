@@ -86,13 +86,13 @@ def w(c):
 
 svg = f"""
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
-  <rect x="10" y="15" width="{w(counts['high'])}" height="20" fill="red"/>
+  <rect x="10" y="15" width="{w(counts['high'])}" height="35" fill="red"/>
   <text x="{15 + w(counts['high'])}" y="30" fill="red">High ({counts['high']})</text>
 
-  <rect x="10" y="50" width="{w(counts['medium'])}" height="20" fill="orange"/>
+  <rect x="10" y="50" width="{w(counts['medium'])}" height="35" fill="orange"/>
   <text x="{15 + w(counts['medium'])}" y="65" fill="orange">Medium ({counts['medium']})</text>
 
-  <rect x="10" y="85" width="{w(counts['low'])}" height="20" fill="green"/>
+  <rect x="10" y="85" width="{w(counts['low'])}" height="35" fill="green"/>
   <text x="{15 + w(counts['low'])}" y="100" fill="green">Low ({counts['low']})</text>
 </svg>
 """
