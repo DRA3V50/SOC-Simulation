@@ -32,12 +32,13 @@ run_id = now.strftime("%Y%m%d%H%M%S")
 ticket_path = TICKETS / f"{today}_{run_id}.json"
 ticket_id = f"SOC-INC{today.replace('-', '')}-{random.randint(1000,9999)}"
 severity = random.choices(["high","medium","low"], weights=[3,4,3])[0]
+system_host = f"HOST-{random.randint(10,99)}"  # Always assign a host
 
 ticket = {
     "ticket_id": ticket_id,
     "created": now.isoformat(),
     "severity": severity,
-    "system": f"HOST-{random.randint(10,99)}",
+    "system": system_host,
     "event": f"Simulated SOC event ({severity})"
 }
 
@@ -53,7 +54,7 @@ alert = {
     "severity": severity,
     "event": ticket["event"],
     "timestamp": now.isoformat(),
-    "system": ticket["system"]
+    "system": ticket["system"]  # Always assigned
 }
 
 json.dump(alert, open(alert_path, "w"), indent=2)
@@ -177,7 +178,9 @@ for f in sorted(ALERTS.glob("*.json"), reverse=True)[:5]:
 hosts = {}
 for f in ALERTS.glob("*.json"):
     a = json.load(open(f))
-    h = a.get("system","UNKNOWN_HOST")
+    h = a.get("system")
+    if not h:
+        continue  # skip missing host
     hosts[h] = hosts.get(h,0)+1
 
 readme += "\n## 🖥️ Top 5 Hosts by Alerts\n| Host | Count |\n|---|---|\n"
