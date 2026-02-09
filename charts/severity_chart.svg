@@ -1,9 +1,9 @@
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
 
   <text x="10" y="32" style="fill:red;">🔴 High</text>
-  <rect x="120" y="15" width="123" height="25" fill="red"/>
-  <text x="248" y="32"
-        style="fill:red; font-weight:bold;">20</text>
+  <rect x="120" y="15" width="129" height="25" fill="red"/>
+  <text x="254" y="32"
+        style="fill:red; font-weight:bold;">21</text>
 
   <text x="10" y="67" style="fill:orange;">🟠 Medium</text>
   <rect x="120" y="50" width="160" height="25" fill="orange"/>
