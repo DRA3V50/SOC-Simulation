@@ -1,18 +1,18 @@
 <svg width="320" height="120" xmlns="http://www.w3.org/2000/svg">
 
   <text x="10" y="32" style="fill:red;">🔴 High</text>
-  <rect x="120" y="15" width="142" height="25" fill="red"/>
-  <text x="267" y="32"
+  <rect x="120" y="15" width="137" height="25" fill="red"/>
+  <text x="262" y="32"
         style="fill:red; font-weight:bold;">24</text>
 
   <text x="10" y="67" style="fill:orange;">🟠 Medium</text>
   <rect x="120" y="50" width="160" height="25" fill="orange"/>
   <text x="285" y="67"
-        style="fill:orange; font-weight:bold;">27</text>
+        style="fill:orange; font-weight:bold;">28</text>
 
   <text x="10" y="102" style="fill:green;">🟢 Low</text>
-  <rect x="120" y="85" width="154" height="25" fill="green"/>
-  <text x="279" y="102"
+  <rect x="120" y="85" width="148" height="25" fill="green"/>
+  <text x="273" y="102"
         style="fill:green; font-weight:bold;">26</text>
 
 </svg>
