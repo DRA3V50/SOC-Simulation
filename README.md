@@ -9,7 +9,7 @@ SOC-Analytics-Dashboard simulates a **Security Operations Center (SOC)** environ
 It helps blue teams **analyze trends, prioritize incidents, and monitor high-risk hosts** in a controlled environment.
 
 - Simulates realistic SOC alerts 🔴🟠🟢  
-- Prioritizes by severity  
+- Prioritizes by severity 
 - Tracks top hosts 🖥️  
 - Monitors alert velocity ⏱️  
 - Produces daily dashboards with historical trends 📈  
