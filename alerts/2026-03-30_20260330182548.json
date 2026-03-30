@@ -1,0 +1,8 @@
+{
+  "alert_id": "ALERT-20260330-7718",
+  "ticket_id": "SOC-INC20260330-6467",
+  "severity": "high",
+  "event": "Simulated SOC event (high)",
+  "timestamp": "2026-03-30T18:25:48.219969-04:00",
+  "system": "HOST-29"
+}
