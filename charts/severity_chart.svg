@@ -11,8 +11,8 @@
         style="fill:orange; font-weight:bold;">64</text>
 
   <text x="10" y="102" style="fill:green;">🟢 Low</text>
-  <rect x="120" y="85" width="150" height="25" fill="green"/>
-  <text x="275" y="102"
-        style="fill:green; font-weight:bold;">60</text>
+  <rect x="120" y="85" width="152" height="25" fill="green"/>
+  <text x="277" y="102"
+        style="fill:green; font-weight:bold;">61</text>
 
 </svg>
