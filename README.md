@@ -1,6 +1,6 @@
 # 🛡️ SOC-Analytics-Dashboard
 
-![XP Badge](https://img.shields.io/badge/XP:1112%20🔴:65%20🟠:68%20🟢:61-blue)
+![XP Badge](https://img.shields.io/badge/XP:1122%20🔴:66%20🟠:68%20🟢:61-blue)
 
 ---
 
@@ -27,18 +27,18 @@ It helps blue teams **analyze trends, prioritize incidents, and monitor high-ris
 
 ## 📊 Dashboard Overview
 
-<img src="charts/severity_chart.svg?20260413183521" width="320" />
-<table><tr><td valign='top'><b>Severity Overview</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Severity</th><th>Count</th><th>% of Total</th></tr><tr><td>🔴 High</td><td style='color:red; font-weight:bold;'>65</td><td>34%</td></tr><tr><td>🟠 Medium</td><td style='color:orange; font-weight:bold;'>68</td><td>35%</td></tr><tr><td>🟢 Low</td><td style='color:green; font-weight:bold;'>61</td><td>31%</td></tr></table></td><td valign='top'><b>Top 5 Hosts 🖥️</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Host</th><th>Count</th></tr><tr><td>HOST-29</td><td style='color:black; font-weight:bold;'>5</td></tr><tr><td>HOST-45</td><td style='color:black; font-weight:bold;'>5</td></tr><tr><td>HOST-31</td><td style='color:black; font-weight:bold;'>4</td></tr><tr><td>HOST-13</td><td style='color:black; font-weight:bold;'>4</td></tr><tr><td>HOST-27</td><td style='color:black; font-weight:bold;'>4</td></tr></table></td><td valign='top'><b>Alert Velocity ⏱️</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Window</th><th>Alerts</th></tr><tr><td>Last 24 Hours</td><td>2</td></tr><tr><td>All Time</td><td>194</td></tr></table></td></tr></table>
+<img src="charts/severity_chart.svg?20260414065612" width="320" />
+<table><tr><td valign='top'><b>Severity Overview</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Severity</th><th>Count</th><th>% of Total</th></tr><tr><td>🔴 High</td><td style='color:red; font-weight:bold;'>66</td><td>34%</td></tr><tr><td>🟠 Medium</td><td style='color:orange; font-weight:bold;'>68</td><td>35%</td></tr><tr><td>🟢 Low</td><td style='color:green; font-weight:bold;'>61</td><td>31%</td></tr></table></td><td valign='top'><b>Top 5 Hosts 🖥️</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Host</th><th>Count</th></tr><tr><td>HOST-62</td><td style='color:black; font-weight:bold;'>5</td></tr><tr><td>HOST-29</td><td style='color:black; font-weight:bold;'>5</td></tr><tr><td>HOST-45</td><td style='color:black; font-weight:bold;'>5</td></tr><tr><td>HOST-31</td><td style='color:black; font-weight:bold;'>4</td></tr><tr><td>HOST-13</td><td style='color:black; font-weight:bold;'>4</td></tr></table></td><td valign='top'><b>Alert Velocity ⏱️</b><br><table border='1' cellpadding='5' cellspacing='0'><tr><th>Window</th><th>Alerts</th></tr><tr><td>Last 24 Hours</td><td>3</td></tr><tr><td>All Time</td><td>195</td></tr></table></td></tr></table>
 
 ## 🎟️ Recent Alerts
 
 | Date | Ticket | Alert | Severity | Event |
 |------|--------|-------|---------|-------|
+| 2026-04-14_20260414065612 | SOC-INC20260414-9416 | ALERT-20260414-5417 | 🔴 High | Simulated SOC event (high) |
 | 2026-04-13_20260413183521 | SOC-INC20260413-1004 | ALERT-20260413-3025 | 🟠 Medium | Simulated SOC event (medium) |
 | 2026-04-13_20260413070926 | SOC-INC20260413-3668 | ALERT-20260413-2963 | 🔴 High | Simulated SOC event (high) |
 | 2026-04-12_20260412182412 | SOC-INC20260412-1097 | ALERT-20260412-3679 | 🟠 Medium | Simulated SOC event (medium) |
 | 2026-04-12_20260412063008 | SOC-INC20260412-5588 | ALERT-20260412-7581 | 🟠 Medium | Simulated SOC event (medium) |
-| 2026-04-11_20260411182219 | SOC-INC20260411-2177 | ALERT-20260411-1665 | 🟠 Medium | Simulated SOC event (medium) |
 
 ## 🧰 Detection Rules
 
