@@ -1,0 +1,7 @@
+{
+  "ticket_id": "SOC-INC20260717-7865",
+  "created": "2026-07-17T07:14:44.134126-04:00",
+  "severity": "medium",
+  "system": "HOST-51",
+  "event": "Simulated SOC event (medium)"
+}
