@@ -3,7 +3,7 @@
   <text x="10" y="32" style="fill:red;">🔴 High</text>
   <rect x="120" y="15" width="122" height="25" fill="red"/>
   <text x="247" y="32"
-        style="fill:red; font-weight:bold;">151</text>
+        style="fill:red; font-weight:bold;">152</text>
 
   <text x="10" y="67" style="fill:orange;">🟠 Medium</text>
   <rect x="120" y="50" width="160" height="25" fill="orange"/>
