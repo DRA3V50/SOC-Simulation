@@ -13,6 +13,6 @@
   <text x="10" y="102" style="fill:green;">🟢 Low</text>
   <rect x="120" y="85" width="124" height="25" fill="green"/>
   <text x="249" y="102"
-        style="fill:green; font-weight:bold;">155</text>
+        style="fill:green; font-weight:bold;">156</text>
 
 </svg>
