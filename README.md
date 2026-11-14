@@ -22,9 +22,7 @@ It helps blue teams **analyze trends, prioritize incidents, and monitor high-ris
 - **Host Monitoring:** Tracks top 5 hosts generating the most alerts 🖥️  
 - **Velocity Tracking:** Measures alert trends for last 24 hours & all-time ⏱️  
 - **Visualization:** Color-coded SVG charts & tables for fast comprehension
-
 ---
-
 ## 📊 Dashboard Overview
 
 <img src="charts/severity_chart.svg?20261113205407" width="320" />
