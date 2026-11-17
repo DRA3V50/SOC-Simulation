@@ -45,3 +45,4 @@ It helps blue teams **analyze trends, prioritize incidents, and monitor high-ris
 | Rule ID | Name | Severity | Description |
 |---|---|---|---|
 | DET-001 | Multiple Failed Logins | High | Detects multiple failed authentication attempts from the same host |
+---
